@@ -1,0 +1,124 @@
+.TH GOATTRACKER 1 "May 15, 2019"
+.SH NAME
+goattracker \- C64 music editor
+.SH SYNOPSIS
+.B goattracker
+.RI [ songname ]
+.RI [ options ]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B goattracker
+command.
+.PP
+\fBgoattracker\fP is a C64 music tracker.
+It supports emulated output via the software reSID engine, the HardSID
+soundcard, or the Catweasel (MK3/MK4) controller card, and produces songs in
+its own format (*.SNG). The program can also export tunes in SID format, BIN
+format, or Commodore PRG format for inclusion on a floppy you can stick into
+a 1541/1571/1581 drive.
+
+Like most tracker programs, the program is able to import instrument files,
+create and modify track patterns, set the order of playback of patterns and
+change details of the song such as the title and author. If you are familiar
+with tracker\-like programs, then GoatTracker will feel like a simple version
+of those, though with differences attributable to the hardware. People new to
+composing in general should look up other information on composing on the
+C64.
+.TP
+\fB-A\fIxx\fR
+Set ADSR parameter for hardrestart in hex. DEFAULT=0F00
+.TP
+\fB-B\fIxx\fR
+Set sound buffer length in milliseconds DEFAULT=100
+.TP
+\fB-C\fIxx\fR
+Use Catweasel MK3 PCI SID (0 = off, 1 = on)
+.TP
+\fB-D\fIxx\fR
+Pattern row display (0 = decimal, 1 = hex, 2 = decimal w/dots, 3 = hex w/dots)
+.TP
+\fB-E\fIxx\fR
+Set emulated SID model (0 = 6581 1 = 8580) DEFAULT=6581
+.TP
+\fB-F\fIxx\fR
+Set custom SID clock cycles per second (0 = use PAL/NTSC default)
+.TP
+\fB-G\fIxx\fR
+Set pitch of A-4 in Hz (0 = use default frequencytable, close to 440Hz)
+.TP
+\fB-H\fIxx\fR
+Use HardSID (0 = off, 1 = HardSID ID0 2 = HardSID ID1 etc.)
+.TP
+\fB-I\fIxx\fR
+Set reSID interpolation (0 = off, 1 = on, 2 = distortion, 3 = distortion & on) DEFAULT=off
+.TP
+\fB-J\fIxx\fR
+Set special note names (2 chars for every note in an octave/cycle, e.g. C-DbD-EbE-F-GbG-AbA-BbB-)
+.TP
+\fB-K\fIxx\fR
+Note-entry mode (0 = Protracker, 1 = DMC, 2 = Janko) DEFAULT=Protracker
+.TP
+\fB-L\fIxx\fR
+SID memory location in hex. DEFAULT=D400
+.TP
+\fB-M\fIxx\fR
+Set sound mixing rate DEFAULT=44100
+.TP
+\fB-O\fIxx\fR
+Set pulseoptimization/skipping (0 = off, 1 = on) DEFAULT=on
+.TP
+\fB-Q\fIxx\fR
+Set equal divisions per octave (12 = default, 8.2019143 = Bohlen-Pierce)
+.TP
+\fB-R\fIxx\fR
+Set realtime-effect optimization/skipping (0 = off, 1 = on) DEFAULT=on
+.TP
+\fB-S\fIxx\fR
+Set speed multiplier (0 for 25Hz, 1 for 1x, 2 for 2x etc.)
+.TP
+\fB-T\fIxx\fR
+Set HardSID interactive mode sound buffer length in milliseconds DEFAULT=20, max.buffering=0
+.TP
+\fB-U\fIxx\fR
+Set HardSID playback mode sound buffer length in milliseconds DEFAULT=400, max.buffering=0
+.TP
+\fB-V\fIxx\fR
+Set finevibrato conversion (0 = off, 1 = on) DEFAULT=on
+.TP
+\fB-\fIXxx\fR
+Set window type (0 = window, 1 = fullscreen) DEFAULT=window
+.TP
+\fB-Y\fIxx\fR
+Path to a Scala tuning file .scl
+.TP
+\fB-Z\fIxx\fR
+Set random reSID write delay in cycles (0 = off) DEFAULT=off
+.TP
+\fB-w\fIxx\fR
+Set window scale factor (1 = no scaling, 2 to 4 = 2 to 4 times bigger window) DEFAULT=1
+.TP
+\fB-N\fR
+Use NTSC timing
+.TP
+\fB-P\fR
+Use PAL timing (DEFAULT)
+.TP
+\fB-W\fR
+Write sound output to a file SIDAUDIO.RAW
+.TP
+\fB-?\fR
+Show this info again
+.TP
+\fB-??\fR
+Standalone online help window
+.SH SEE ALSO
+.BR ocp (1),
+.BR protracker (1),
+.BR milkytracker (1),
+.BR schism (1)
+.br
+.SH AUTHOR
+goattracker was written by Lasse \[:O]\[:o]rni.
+.PP
+This manual page was written by G\[:u]rkan Seng\[:u]n <gurkan@phys.ethz.ch>,
+for the Debian project (but may be used by others).
