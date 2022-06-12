@@ -1,8 +1,8 @@
 GoatTracker v2.76
 -----------------
 
-Editor by Lasse Öörni (loorni@gmail.com)
-HardSID 4U support by Téli Sándor.
+Editor by Lasse Ã–Ã¶rni (loorni@gmail.com)
+HardSID 4U support by TÃ©li SÃ¡ndor.
 Uses reSID engine by Dag Lem.
 Uses reSID distortion / nonlinearity by Antti Lankila.
 Uses 6510 crossassembler from Exomizer2 beta by Magnus Lind.
@@ -1958,7 +1958,7 @@ v2.69     - Fixed click bug in reSID audio output.
           - Newest reSID-fp code integrated.
           - reSID-fp filter parameters adjustable from the configuration file.
 
-v2.70     - Hotfix for the new HardSID UPlay/Uno devices from Téli Sándor.
+v2.70     - Hotfix for the new HardSID UPlay/Uno devices from T?li S?ndor.
           - Fixed possible crash on some versions of the HardSID dll.
 
 v2.71     - Added keycode fix patch from Valerio Cannone.
@@ -1997,3 +1997,9 @@ v2.75     - Added /Q command line option for setting equal divisions per octave
 v2.76     - Fixed bug in packed songs with no instrument vibrato and only
             calculated speeds.
           - Fixed failure to start up with missing config file parameters.
+
+Unofficial fixes:
+
+          - Macbook keyboard insert support using alt/option + backspace
+          - Better support for some USB keyboards (unwanted characters)
+          - Build instructions for MacOS (see separate txt file)
