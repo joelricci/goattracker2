@@ -384,6 +384,7 @@ void tablecommands(void)
     break;
 
     case KEY_DEL:
+    case KEY_BACKSPACE:
     deletetable(etnum, etpos);
     break;
 
