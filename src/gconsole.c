@@ -640,6 +640,11 @@ void getkey(void)
   if (win_keystate[KEY_ALT] || win_keystate[KEY_RIGHTALT])
       altpressed = 1;
 
+  if (rawkey == SDLK_INSERT) 
+    // some keyboard/systems provide a key code that gets interpreted as additional keystroke
+    // in some cases (table editor). Observed with a Dell USB keyboard on macOS 11. 
+    key = 0;
+
   if (rawkey == SDLK_BACKSPACE && altpressed)
     // macbook keyboard insert using alt+backspace
     rawkey = SDLK_INSERT;
