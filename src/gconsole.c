@@ -16,6 +16,7 @@ unsigned char *chardata = NULL;
 int key = 0;
 int rawkey = 0;
 int shiftpressed = 0;
+int altpressed = 0;
 int cursorflashdelay = 0;
 int mouseb = 0;
 int prevmouseb = 0;
@@ -634,4 +635,8 @@ void getkey(void)
   if (rawkey == SDLK_KP7) key = '7';
   if (rawkey == SDLK_KP8) key = '8';
   if (rawkey == SDLK_KP9) key = '9';
+
+  altpressed = 0;
+  if (win_keystate[KEY_ALT] || win_keystate[KEY_RIGHTALT])
+      altpressed = 1;
 }
