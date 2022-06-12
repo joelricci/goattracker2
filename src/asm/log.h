@@ -122,6 +122,9 @@ do { \
 
 #define IS_LOGGABLE(L) (G_log_level >= (L))
 
+// Lazy fix: Must explicitly enable logging for goattracker - this is only need for development
+// and will cause pointer warnings on 64 bit systems.
+#ifdef ASM_LOGGING
 #define LOG(L, M) \
 do { \
     if(IS_LOGGABLE(L)) { \
@@ -129,5 +132,7 @@ do { \
         log_log_default M; \
     } \
 } while(0)
-
+#else
+#define LOG(X, Y) //NOP
+#endif
 #endif
