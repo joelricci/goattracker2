@@ -639,4 +639,8 @@ void getkey(void)
   altpressed = 0;
   if (win_keystate[KEY_ALT] || win_keystate[KEY_RIGHTALT])
       altpressed = 1;
+
+  if (rawkey == SDLK_BACKSPACE && altpressed)
+    // macbook keyboard insert using alt+backspace
+    rawkey = SDLK_INSERT;
 }
