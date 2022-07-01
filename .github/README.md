@@ -37,5 +37,5 @@ Additional changes in this fork:
 - Delete using fn + backspace on a Macbook keyboard
 - Delete key works as expected when entering filenames
 - Better support for some USB keyboards (unwanted characters)
-- Build instructions for MacOS (see separate txt file)
+- Build instructions for MacOS (see separate [txt file](../build_instructions_macos.txt))
 - Builds on Intel macOS 11 and later
