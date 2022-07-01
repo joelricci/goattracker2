@@ -1,5 +1,6 @@
 # GoatTracker v2.76
 ## Silver Fork 
+##### Macbook related fixes and improvements
 \
 Editor by Lasse Öörni (loorni@gmail.com)  
 HardSID 4U support by Téli Sándor.  
