@@ -2006,3 +2006,4 @@ Unofficial fixes:
           - Delete key works as expected when entering filenames
           - Better support for some USB keyboards (unwanted characters)
           - Build instructions for MacOS (see separate txt file)
+          - Builds on Intel macOS 11 and later
