@@ -43,13 +43,11 @@ void patterncommands(void)
   switch(key)
   {
     case '<':
-    case '(':
     case '[':
     prevpattern();
     break;
 
     case '>':
-    case ')':
     case ']':
     nextpattern();
     break;

@@ -2001,5 +2001,6 @@ v2.76     - Fixed bug in packed songs with no instrument vibrato and only
 Unofficial fixes:
 
           - Macbook keyboard insert support using alt/option + backspace
+          - Deleting rows now works correctly on a Macbook keyboard
           - Better support for some USB keyboards (unwanted characters)
           - Build instructions for MacOS (see separate txt file)
