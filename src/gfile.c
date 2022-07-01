@@ -501,6 +501,13 @@ void editstring(char *buffer, int maxlength)
 
   if (key)
   {
+    if ((key == 8 || key == KEY_DEL))
+    {
+      if (len > 0) {
+        buffer[len-1] = 0;
+      }
+      return;
+    }
     if ((key >= 32) && (key < 256))
     {
       if (len < maxlength-1)
@@ -508,10 +515,6 @@ void editstring(char *buffer, int maxlength)
         buffer[len] = key;
         buffer[len+1] = 0;
       }
-    }
-    if ((key == 8) && (len > 0))
-    {
-      buffer[len-1] = 0;
     }
   }
 }
