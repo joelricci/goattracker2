@@ -34,5 +34,6 @@ Additional changes in this fork:
 
 - Macbook keyboard insert support using alt/option + backspace
 - Deleting rows now works correctly on a Macbook keyboard
+- Delete using fn + backspace on a Macbook keyboard
 - Better support for some USB keyboards (unwanted characters)
 - Build instructions for MacOS (see separate txt file)

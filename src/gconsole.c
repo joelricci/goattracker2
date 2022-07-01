@@ -648,4 +648,11 @@ void getkey(void)
   if (rawkey == SDLK_BACKSPACE && altpressed)
     // macbook keyboard insert using alt+backspace
     rawkey = SDLK_INSERT;
+
+  if (rawkey == SDLK_DELETE && key == SDLK_LEFTPAREN)
+    // macbook keyboard delete using fn+backspace
+  {
+    rawkey = SDLK_DELETE;
+    key = KEY_DEL;
+  }
 }
