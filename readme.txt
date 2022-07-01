@@ -2003,7 +2003,7 @@ Unofficial fixes:
           - Macbook keyboard insert support using alt/option + backspace or fn + shift + backspace
           - Deleting rows now works correctly on a Macbook keyboard
           - Delete using fn + backspace on a Macbook keyboard
-          - Delete key works as expected when entering filenames
+          - Backspace works as expected when entering filenames
           - Better support for some USB keyboards (unwanted characters)
           - Build instructions for MacOS (see separate txt file)
           - Builds on Intel macOS 11 and later
