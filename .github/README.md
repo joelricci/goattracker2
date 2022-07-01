@@ -32,7 +32,7 @@ This fork is based on the official above version of Goat Tracker. See [readme.tx
 
 Additional changes in this fork:
 
-- Macbook keyboard insert support using alt/option + backspace
+- Macbook keyboard insert support using alt/option + backspace or fn + shift + backspace
 - Deleting rows now works correctly on a Macbook keyboard
 - Delete using fn + backspace on a Macbook keyboard
 - Delete key works as expected when entering filenames

@@ -645,8 +645,9 @@ void getkey(void)
     // in some cases (table editor). Observed with a Dell USB keyboard on macOS 11. 
     key = 0;
 
-  if (rawkey == SDLK_BACKSPACE && altpressed)
-    // macbook keyboard insert using alt+backspace
+  if ((rawkey == SDLK_BACKSPACE && altpressed) ||
+      (rawkey == SDLK_DELETE && shiftpressed))
+    // macbook keyboard insert using alt+backspace or fn+shift+backspace
     rawkey = SDLK_INSERT;
 
   if (rawkey == SDLK_DELETE && key == SDLK_LEFTPAREN)
