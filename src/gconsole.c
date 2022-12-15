@@ -16,6 +16,8 @@ unsigned char *chardata = NULL;
 int key = 0;
 int rawkey = 0;
 int shiftpressed = 0;
+int shiftonlypressed = 0;
+int ctrlpressed = 0;
 int altpressed = 0;
 int cursorflashdelay = 0;
 int mouseb = 0;
@@ -615,9 +617,18 @@ void getkey(void)
   }
 
   shiftpressed = 0;
+  ctrlpressed = 0;
+  shiftonlypressed = 0;
+
   if ((win_keystate[KEY_LEFTSHIFT])||(win_keystate[KEY_RIGHTSHIFT])||
       (win_keystate[KEY_CTRL])||(win_keystate[KEY_RIGHTCTRL]))
     shiftpressed = 1;
+
+  if ((win_keystate[KEY_LEFTSHIFT]) || (win_keystate[KEY_RIGHTSHIFT]))
+	  shiftonlypressed = 1;
+
+  if ((win_keystate[KEY_CTRL]) || (win_keystate[KEY_RIGHTCTRL]))
+	  ctrlpressed=1;
 
   if (rawkey == SDLK_KP_ENTER)
   {

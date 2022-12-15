@@ -388,7 +388,7 @@ int sound_thread(void *userdata)
 
     for (c = 0; c < NUMSIDREGS; c++)
     {
-      unsigned o = sid_getorder(c);
+      unsigned o = sid_getorder(c,editorInfo.adparam);
 
       HardSID_Write(usehardsid-1, SIDWRITEDELAY, o, sidreg[o]);
       cycles -= SIDWRITEDELAY;
@@ -435,7 +435,7 @@ void sound_playrout(void)
     #ifdef __WIN32__
     for (c = 0; c < NUMSIDREGS; c++)
     {
-      unsigned o = sid_getorder(c);
+      unsigned o = sid_getorder(c, editorInfo.adparam);
         if (cycleexacthardsid) {
             HardSID_Write(usehardsid-1, SIDWRITEDELAY, o, sidreg[o]);
         }
@@ -446,7 +446,7 @@ void sound_playrout(void)
     #else
     for (c = 0; c < NUMSIDREGS; c++)
     {
-      unsigned o = sid_getorder(c);
+      unsigned o = sid_getorder(c, editorInfo.adparam);
       Uint32 dataword = (o << 8) | sidreg[o];
       write(hardsidfd, &dataword, 4);
     }
@@ -460,7 +460,7 @@ void sound_playrout(void)
 
     for(w = 0; w < NUMSIDREGS; w++)
     {
-      unsigned o = sid_getorder(w);
+      unsigned o = sid_getorder(w, editorInfo.adparam);
 
       buf[w*2] = o;
       buf[w*2+1] = sidreg[o];
@@ -469,7 +469,7 @@ void sound_playrout(void)
     #else
     for (c = 0; c < NUMSIDREGS; c++)
     {
-      unsigned o = sid_getorder(c);
+      unsigned o = sid_getorder(c, editorInfo.adparam);
 
       lseek(catweaselfd, o, SEEK_SET);
       write(catweaselfd, &sidreg[o], 1);
@@ -486,7 +486,7 @@ void sound_mixer(Sint32 *dest, unsigned samples)
   if (samples > MIXBUFFERSIZE) return;
   if (!buffer) return;
 
-  sid_fillbuffer(buffer, samples);
+  sid_fillbuffer(buffer, samples,editorInfo.adparam);
   if (writehandle)
     fwrite(buffer, samples * sizeof(Uint16), 1, writehandle);
 

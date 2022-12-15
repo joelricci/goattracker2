@@ -2,17 +2,17 @@
 #define GORDER_H
 
 #ifndef GORDER_C
-extern int espos[MAX_CHN];
-extern int esend[MAX_CHN];
-extern int eseditpos;
-extern int esview;
-extern int escolumn;
-extern int eschn;
-extern int esnum;
-extern int esmarkchn;
-extern int esmarkstart;
-extern int esmarkend;
-extern int enpos;
+//extern int espos[MAX_CHN];
+//extern int esend[MAX_CHN];
+//extern int editorInfo.eseditpos;
+//extern int editorInfo.esview;
+//extern int editorInfo.escolumn;
+//extern int editorInfo.eschn;
+//extern int editorInfo.esnum;
+//extern int editorInfo.esmarkchn;
+//extern int editorInfo.esmarkstart;
+//extern int editorInfo.esmarkend;
+//extern int editorInfo.enpos;
 #endif
 
 void updateviewtopos(void);

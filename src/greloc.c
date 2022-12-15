@@ -808,7 +808,7 @@ void relocator(void)
   }
 
   // Disable sameparam optimization for multispeed stability
-  if (multiplier > 1)
+  if (editorInfo.multiplier > 1)
   {
     fixedparams = 0;
     numlegato++;
@@ -1092,8 +1092,8 @@ void relocator(void)
   insertdefine("ZPGHOSTREGS", (playerversion & PLAYER_ZPGHOSTREGS) ? 1 : 0);
   insertdefine("FIXEDPARAMS", fixedparams);
   insertdefine("SIMPLEPULSE", simplepulse);
-  insertdefine("PULSEOPTIMIZATION", optimizepulse);
-  insertdefine("REALTIMEOPTIMIZATION", optimizerealtime);
+  insertdefine("PULSEOPTIMIZATION", editorInfo.optimizepulse);
+  insertdefine("REALTIMEOPTIMIZATION", editorInfo.optimizerealtime);
   insertdefine("NOAUTHORINFO", (playerversion & PLAYER_AUTHORINFO) ? 0 : 1);
   insertdefine("NOEFFECTS", noeffects);
   insertdefine("NOGATE", nogate);
@@ -1135,12 +1135,12 @@ void relocator(void)
   insertdefine("NUMHRINSTR", numnormal);
   insertdefine("NUMNOHRINSTR", numnohr);
   insertdefine("NUMLEGATOINSTR", numlegato);
-  insertdefine("ADPARAM", adparam >> 8);
-  insertdefine("SRPARAM", adparam & 0xff);
+  insertdefine("ADPARAM", editorInfo.adparam >> 8);
+  insertdefine("SRPARAM", editorInfo.adparam & 0xff);
   if ((instr[MAX_INSTR-1].ad >= 2) && (!(instr[MAX_INSTR-1].ptr[WTBL])))
     insertdefine("DEFAULTTEMPO", instr[MAX_INSTR-1].ad - 1);
   else
-    insertdefine("DEFAULTTEMPO", multiplier ? (multiplier*6-1) : 5);
+    insertdefine("DEFAULTTEMPO", editorInfo.multiplier ? (editorInfo.multiplier*6-1) : 5);
 
   // Fixed firstwave & gatetimer
   if (fixedparams)
@@ -1150,7 +1150,7 @@ void relocator(void)
   }
 
   // Insert source code of player
-  if (adparam >= 0xf000)
+  if (editorInfo.adparam >= 0xf000)
     playername = "altplayer.s";
 
   if (!insertfile(playername))
@@ -1603,7 +1603,7 @@ void relocator(void)
     fwrite8(songhandle, byte);
 
     // Init address
-    if ((multiplier > 1) || (!multiplier))
+    if ((editorInfo.multiplier > 1) || (!editorInfo.multiplier))
     {
       unsigned speedvalue;
       byte = (playeradr-10) >> 8;
@@ -1611,14 +1611,14 @@ void relocator(void)
       byte = (playeradr-10) & 0xff;
       fwrite8(songhandle, byte);
 
-      if (multiplier)
+      if (editorInfo.multiplier)
       {
-        if (ntsc) speedvalue = 0x42c6/multiplier;
-        else speedvalue = 0x4cc7/multiplier;
+        if (editorInfo.ntsc) speedvalue = 0x42c6/ editorInfo.multiplier;
+        else speedvalue = 0x4cc7/ editorInfo.multiplier;
       }
       else
       {
-        if (ntsc) speedvalue = 0x42c6*2;
+        if (editorInfo.ntsc) speedvalue = 0x42c6*2;
         else speedvalue = 0x4cc7*2;
       }
       speedcode[1] = speedvalue & 0xff;
@@ -1652,7 +1652,7 @@ void relocator(void)
 
     // Song speed bits
     byte = 0x00;
-    if ((ntsc) || (multiplier > 1) || (!multiplier)) byte = 0xff;
+    if ((editorInfo.ntsc) || (editorInfo.multiplier > 1) || (!editorInfo.multiplier)) byte = 0xff;
     fwrite8(songhandle, byte);
     fwrite8(songhandle, byte);
     fwrite8(songhandle, byte);
@@ -1666,9 +1666,9 @@ void relocator(void)
     // Flags
     byte = 0x00;
     fwrite8(songhandle, byte);
-    if (ntsc) byte = 8;
+    if (editorInfo.ntsc) byte = 8;
       else byte = 4;
-    if (sidmodel) byte |= 32;
+    if (editorInfo.sidmodel) byte |= 32;
       else byte |= 16;
     fwrite8(songhandle, byte);
 
@@ -1680,7 +1680,7 @@ void relocator(void)
     fwrite8(songhandle, byte);
 
     // Load address
-    if ((multiplier > 1) || (!multiplier))
+    if ((editorInfo.multiplier > 1) || (!editorInfo.multiplier))
     {
       byte = (playeradr-10) & 0xff;
       fwrite8(songhandle, byte);
@@ -1694,7 +1694,7 @@ void relocator(void)
       byte = (playeradr) >> 8;
       fwrite8(songhandle, byte);
     }
-    if ((multiplier > 1) || (!multiplier)) fwrite(speedcode, 10, 1, songhandle);
+    if ((editorInfo.multiplier > 1) || (!editorInfo.multiplier)) fwrite(speedcode, 10, 1, songhandle);
   }
 
   fwrite(packeddata, packedsize, 1, songhandle);

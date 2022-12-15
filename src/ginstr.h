@@ -2,9 +2,9 @@
 #define GINSTR_H
 
 #ifndef GINSTR_C
-extern int einum;
-extern int eipos;
-extern int eicolumn;
+//extern int editorInfo.einum;
+//extern int editorInfo.eipos;
+//extern int editorInfo.eicolumn;
 extern INSTR instrcopybuffer;
 #endif
 

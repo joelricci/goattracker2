@@ -42,8 +42,9 @@ void onlinehelp(int standalone,int context)
     "TAB Cycle between editing modes",
     "INS Insert row (Press on endmark to",
     "DEL Delete row change patt. length)",
+	//"CTRL+Z Undo",
     "SHIFT+ESC Clear/optimize all musicdata",
-    "ESC Exit program",
+    "ESC Exit program   CTRL+Z Undo",
     NULL
   };
 
@@ -285,7 +286,7 @@ void onlinehelp(int standalone,int context)
       left = printrows(0,left,HELP_NORMAL, tables);
       left++;
     } else {
-      switch(editmode) {
+      switch(editorInfo.editmode) {
       case EDIT_PATTERN:      
         printtext(0,left++, HELP_HEADER, "PATTERN EDIT MODE");
         left = printrows(0,left,HELP_NORMAL, patternkeys);

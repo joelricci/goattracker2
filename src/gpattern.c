@@ -6,6 +6,8 @@
 
 #include "goattrk2.h"
 
+EDITOR_INFO editorInfo;
+
 unsigned char notekeytbl1[] = {KEY_Z, KEY_S, KEY_X, KEY_D, KEY_C, KEY_V,
   KEY_G, KEY_B, KEY_H, KEY_N, KEY_J, KEY_M, KEY_COMMA, KEY_L, KEY_COLON};
 
@@ -26,15 +28,15 @@ unsigned char cmdcopybuffer[MAX_PATTROWS*4+4];
 int patterncopyrows = 0;
 int cmdcopyrows = 0;
 
-int epnum[MAX_CHN];
-int eppos;
-int epview;
-int epcolumn;
-int epchn;
-int epoctave = 2;
-int epmarkchn = -1;
-int epmarkstart;
-int epmarkend;
+//int epnum[MAX_CHN];
+//int editorInfo.eppos;
+//int editorInfo.epview;
+//int editorInfo.epcolumn;
+//int editorInfo.epchn;
+//int editorInfo.epoctave = 2;
+//int editorInfo.epmarkchn = -1;
+//int editorInfo.epmarkstart;
+//int editorInfo.epmarkend;
 
 void patterncommands(void)
 {
@@ -61,16 +63,16 @@ void patterncommands(void)
         case KEY_TRACKER:
         for (c = 0; c < sizeof(notekeytbl1); c++)
         {
-          if ((rawkey == notekeytbl1[c]) && (!epcolumn) && (!shiftpressed))
+          if ((rawkey == notekeytbl1[c]) && (!editorInfo.epcolumn) && (!shiftpressed))
           {
-            newnote = FIRSTNOTE+c+epoctave*12;
+            newnote = FIRSTNOTE+c+editorInfo.epoctave*12;
           }
         }
         for (c = 0; c < sizeof(notekeytbl2); c++)
         {
-          if ((rawkey == notekeytbl2[c]) && (!epcolumn) && (!shiftpressed))
+          if ((rawkey == notekeytbl2[c]) && (!editorInfo.epcolumn) && (!shiftpressed))
           {
-            newnote = FIRSTNOTE+c+(epoctave+1)*12;
+            newnote = FIRSTNOTE+c+(editorInfo.epoctave+1)*12;
           }
         }
         break;
@@ -78,9 +80,9 @@ void patterncommands(void)
         case KEY_DMC:
         for (c = 0; c < sizeof(dmckeytbl); c++)
         {
-          if ((rawkey == dmckeytbl[c]) && (!epcolumn) && (!shiftpressed))
+          if ((rawkey == dmckeytbl[c]) && (!editorInfo.epcolumn) && (!shiftpressed))
           {
-            newnote = FIRSTNOTE+c+epoctave*12;
+            newnote = FIRSTNOTE+c+editorInfo.epoctave*12;
           }
         }
         break;
@@ -88,16 +90,16 @@ void patterncommands(void)
         case KEY_JANKO:
         for (c = 0; c < sizeof(jankokeytbl1); c++)
         {
-          if ((rawkey == jankokeytbl1[c]) && (!epcolumn) && (!shiftpressed))
+          if ((rawkey == jankokeytbl1[c]) && (!editorInfo.epcolumn) && (!shiftpressed))
           {
-            newnote = FIRSTNOTE+c+epoctave*12;
+            newnote = FIRSTNOTE+c+editorInfo.epoctave*12;
           }
         }
         for (c = 0; c < sizeof(jankokeytbl2); c++)
         {
-          if ((rawkey == jankokeytbl2[c]) && (!epcolumn) && (!shiftpressed))
+          if ((rawkey == jankokeytbl2[c]) && (!editorInfo.epcolumn) && (!shiftpressed))
           {
-            newnote = FIRSTNOTE+c+(epoctave+1)*12;
+            newnote = FIRSTNOTE+c+(editorInfo.epoctave+1)*12;
           }
         }
         break;
@@ -105,11 +107,11 @@ void patterncommands(void)
     }
 
     if (newnote > LASTNOTE) newnote = -1;
-    if ((rawkey == 0x08) && (!epcolumn)) newnote = REST;
-    if ((rawkey == 0x14) && (!epcolumn)) newnote = KEYOFF;
+    if ((rawkey == 0x08) && (!editorInfo.epcolumn)) newnote = REST;
+    if ((rawkey == 0x14) && (!editorInfo.epcolumn)) newnote = KEYOFF;
     if (rawkey == KEY_ENTER)
     {
-      switch(epcolumn)
+      switch(editorInfo.epcolumn)
       {
         case 0:
         if (shiftpressed)
@@ -120,20 +122,20 @@ void patterncommands(void)
 
         case 1:
         case 2:
-        if (pattern[epnum[epchn]][eppos*4+1])
+        if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1])
         {
-          gotoinstr(pattern[epnum[epchn]][eppos*4+1]);
+          gotoinstr(pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1]);
           return;
         }
         break;
 
         default:
-        switch (pattern[epnum[epchn]][eppos*4+2])
+        switch (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2])
         {
           case CMD_SETWAVEPTR:
-          if (pattern[epnum[epchn]][eppos*4+3])
+          if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3])
           {
-            gototable(WTBL, pattern[epnum[epchn]][eppos*4+3] - 1);
+            gototable(WTBL, pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] - 1);
             return;
           }
           else
@@ -142,7 +144,7 @@ void patterncommands(void)
             {
               int pos = gettablelen(WTBL);
               if (pos >= MAX_TABLELEN-1) pos = MAX_TABLELEN - 1;
-              pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
               gototable(WTBL, pos);
               return;
             }
@@ -150,9 +152,9 @@ void patterncommands(void)
           break;
 
           case CMD_SETPULSEPTR:
-          if (pattern[epnum[epchn]][eppos*4+3])
+          if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3])
           {
-            gototable(PTBL, pattern[epnum[epchn]][eppos*4+3] - 1);
+            gototable(PTBL, pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] - 1);
             return;
           }
           else
@@ -161,7 +163,7 @@ void patterncommands(void)
             {
               int pos = gettablelen(PTBL);
               if (pos >= MAX_TABLELEN-1) pos = MAX_TABLELEN - 1;
-              pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
               gototable(PTBL, pos);
               return;
             }
@@ -169,9 +171,9 @@ void patterncommands(void)
           break;
 
           case CMD_SETFILTERPTR:
-          if (pattern[epnum[epchn]][eppos*4+3])
+          if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3])
           {
-            gototable(FTBL, pattern[epnum[epchn]][eppos*4+3] - 1);
+            gototable(FTBL, pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] - 1);
             return;
           }
           else
@@ -180,7 +182,7 @@ void patterncommands(void)
             {
               int pos = gettablelen(FTBL);
               if (pos >= MAX_TABLELEN-1) pos = MAX_TABLELEN - 1;
-              pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
               gototable(FTBL, pos);
               return;
             }
@@ -188,17 +190,17 @@ void patterncommands(void)
           break;
 
           case CMD_FUNKTEMPO:
-          if (pattern[epnum[epchn]][eppos*4+3])
+          if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3])
           {
             if (!shiftpressed)
             {
-              gototable(STBL, pattern[epnum[epchn]][eppos*4+3] - 1);
+              gototable(STBL, pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] - 1);
               return;
             }
             else
             {
-              int pos = makespeedtable(pattern[epnum[epchn]][eppos*4+3], MST_FUNKTEMPO, 1);
-              pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+              int pos = makespeedtable(pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3], MST_FUNKTEMPO, 1);
+              pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
             }
           }
           else
@@ -208,7 +210,7 @@ void patterncommands(void)
               int pos = findfreespeedtable();
               if (pos >= 0)
               {
-                pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+                pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
                 gototable(STBL, pos);
                 return;
               }
@@ -219,17 +221,17 @@ void patterncommands(void)
           case CMD_PORTAUP:
           case CMD_PORTADOWN:
           case CMD_TONEPORTA:
-          if (pattern[epnum[epchn]][eppos*4+3])
+          if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3])
           {
             if (!shiftpressed)
             {
-              gototable(STBL, pattern[epnum[epchn]][eppos*4+3] - 1);
+              gototable(STBL, pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] - 1);
               return;
             }
             else
             {
-              int pos = makespeedtable(pattern[epnum[epchn]][eppos*4+3], MST_PORTAMENTO, 1);
-              pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+              int pos = makespeedtable(pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3], MST_PORTAMENTO, 1);
+              pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
             }
           }
           else
@@ -239,7 +241,7 @@ void patterncommands(void)
               int pos = findfreespeedtable();
               if (pos >= 0)
               {
-                pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+                pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
                 gototable(STBL, pos);
                 return;
               }
@@ -248,17 +250,17 @@ void patterncommands(void)
           break;
 
           case CMD_VIBRATO:
-          if (pattern[epnum[epchn]][eppos*4+3])
+          if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3])
           {
             if (!shiftpressed)
             {
-              gototable(STBL, pattern[epnum[epchn]][eppos*4+3] - 1);
+              gototable(STBL, pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] - 1);
               return;
             }
             else
             {
-              int pos = makespeedtable(pattern[epnum[epchn]][eppos*4+3], finevibrato, 1);
-              pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+              int pos = makespeedtable(pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3], editorInfo.finevibrato, 1);
+              pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
             }
           }
           else
@@ -268,7 +270,7 @@ void patterncommands(void)
               int pos = findfreespeedtable();
               if (pos >= 0)
               {
-                pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+                pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
                 gototable(STBL, pos);
                 return;
               }
@@ -278,47 +280,47 @@ void patterncommands(void)
         }
         break;
       }
-      if ((autoadvance < 2) && (epcolumn))
+      if ((autoadvance < 2) && (editorInfo.epcolumn))
       {
-        eppos++;
-        if (eppos > pattlen[epnum[epchn]])
+        editorInfo.eppos++;
+        if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
         {
-          eppos = 0;
+          editorInfo.eppos = 0;
         }
       }
     }
 
     if (newnote >= 0)
     {
-      if ((recordmode) && (eppos < pattlen[epnum[epchn]]))
+      if ((recordmode) && (editorInfo.eppos < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]))
       {
-        pattern[epnum[epchn]][eppos*4] = newnote;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4] = newnote;
         if (newnote < REST)
         {
-          pattern[epnum[epchn]][eppos*4+1] = einum;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] = editorInfo.einum;
         }
         else
         {
-          pattern[epnum[epchn]][eppos*4+1] = 0;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] = 0;
         }
         if ((shiftpressed) && (newnote == REST))
         {
-          pattern[epnum[epchn]][eppos*4+2] = 0;
-          pattern[epnum[epchn]][eppos*4+3] = 0;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2] = 0;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = 0;
         }
       }
       if (recordmode)
       {
         if (autoadvance < 2)
         {
-          eppos++;
-          if (eppos > pattlen[epnum[epchn]])
+          editorInfo.eppos++;
+          if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
           {
-            eppos = 0;
+            editorInfo.eppos = 0;
           }
         }
       }
-      playtestnote(newnote, einum, epchn);
+      playtestnote(newnote, editorInfo.einum, editorInfo.epchn);
     }
   }
   switch(rawkey)
@@ -340,7 +342,7 @@ void patterncommands(void)
     break;
 
     case KEY_Z:
-    if (shiftpressed)
+    if (shiftonlypressed)
     {
       autoadvance++;
       if (autoadvance > 2) autoadvance = 0;
@@ -354,16 +356,16 @@ void patterncommands(void)
     case KEY_E:
     if (shiftpressed)
     {
-      if (epmarkchn != -1)
+      if (editorInfo.epmarkchn != -1)
       {
-        if (epmarkstart < epmarkend)
+        if (editorInfo.epmarkstart < editorInfo.epmarkend)
         {
           int d = 0;
-          for (c = epmarkstart; c <= epmarkend; c++)
+          for (c = editorInfo.epmarkstart; c <= editorInfo.epmarkend; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            cmdcopybuffer[d*4+2] = pattern[epnum[epmarkchn]][c*4+2];
-            cmdcopybuffer[d*4+3] = pattern[epnum[epmarkchn]][c*4+3];
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            cmdcopybuffer[d*4+2] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+2];
+            cmdcopybuffer[d*4+3] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+3];
             d++;
           }
           cmdcopyrows = d;
@@ -371,23 +373,23 @@ void patterncommands(void)
         else
         {
           int d = 0;
-          for (c = epmarkend; c <= epmarkstart; c++)
+          for (c = editorInfo.epmarkend; c <= editorInfo.epmarkstart; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            cmdcopybuffer[d*4+2] = pattern[epnum[epmarkchn]][c*4+2];
-            cmdcopybuffer[d*4+3] = pattern[epnum[epmarkchn]][c*4+3];
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            cmdcopybuffer[d*4+2] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+2];
+            cmdcopybuffer[d*4+3] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+3];
             d++;
           }
           cmdcopyrows = d;
         }
-        epmarkchn = -1;
+        editorInfo.epmarkchn = -1;
       }
       else
       {
-        if (eppos < pattlen[epnum[epchn]])
+        if (editorInfo.eppos < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
         {
-          cmdcopybuffer[2] = pattern[epnum[epchn]][eppos*4+2];
-          cmdcopybuffer[3] = pattern[epnum[epchn]][eppos*4+3];
+          cmdcopybuffer[2] = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2];
+          cmdcopybuffer[3] = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3];
           cmdcopyrows = 1;
         }
       }
@@ -399,10 +401,10 @@ void patterncommands(void)
     {
       for (c = 0; c < cmdcopyrows; c++)
       {
-        if (eppos >= pattlen[epnum[epchn]]) break;
-        pattern[epnum[epchn]][eppos*4+2] = cmdcopybuffer[c*4+2];
-        pattern[epnum[epchn]][eppos*4+3] = cmdcopybuffer[c*4+3];
-        eppos++;
+        if (editorInfo.eppos >= pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) break;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2] = cmdcopybuffer[c*4+2];
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = cmdcopybuffer[c*4+3];
+        editorInfo.eppos++;
       }
     }
     break;
@@ -412,19 +414,19 @@ void patterncommands(void)
     {
       int d, e;
       char temp;
-      if (epmarkchn != -1)
+      if (editorInfo.epmarkchn != -1)
       {
-        if (epmarkstart <= epmarkend)
+        if (editorInfo.epmarkstart <= editorInfo.epmarkend)
         {
-          e = epmarkend;
-          for (c = epmarkstart; c <= epmarkend; c++)
+          e = editorInfo.epmarkend;
+          for (c = editorInfo.epmarkstart; c <= editorInfo.epmarkend; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
             for (d = 0; d < 4; d++)
             {
-              temp = pattern[epnum[epmarkchn]][c*4+d];
-              pattern[epnum[epmarkchn]][c*4+d] = pattern[epnum[epmarkchn]][e*4+d];
-              pattern[epnum[epmarkchn]][e*4+d] = temp;
+              temp = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+d];
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+d] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][e*4+d];
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][e*4+d] = temp;
             }
             e--;
             if (e < c) break;
@@ -432,15 +434,15 @@ void patterncommands(void)
         }
         else
         {
-          e = epmarkstart;
-          for (c = epmarkend; c <= epmarkstart; c++)
+          e = editorInfo.epmarkstart;
+          for (c = editorInfo.epmarkend; c <= editorInfo.epmarkstart; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
             for (d = 0; d < 4; d++)
             {
-              temp = pattern[epnum[epmarkchn]][c*4+d];
-              pattern[epnum[epmarkchn]][c*4+d] = pattern[epnum[epmarkchn]][e*4+d];
-              pattern[epnum[epmarkchn]][e*4+d] = temp;
+              temp = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+d];
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+d] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][e*4+d];
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][e*4+d] = temp;
             }
             e--;
             if (e < c) break;
@@ -449,14 +451,14 @@ void patterncommands(void)
       }
       else
       {
-        e = pattlen[epnum[epchn]] - 1;
-        for (c = 0; c < pattlen[epnum[epchn]]; c++)
+        e = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum] - 1;
+        for (c = 0; c < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]; c++)
         {
           for (d = 0; d < 4; d++)
           {
-            temp = pattern[epnum[epchn]][c*4+d];
-            pattern[epnum[epchn]][c*4+d] = pattern[epnum[epchn]][e*4+d];
-            pattern[epnum[epchn]][e*4+d] = temp;
+            temp = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4+d];
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4+d] = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][e*4+d];
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][e*4+d] = temp;
           }
           e--;
           if (e < c) break;
@@ -468,36 +470,36 @@ void patterncommands(void)
     case KEY_Q:
     if (shiftpressed)
     {
-      if (epmarkchn != -1)
+      if (editorInfo.epmarkchn != -1)
       {
-        if (epmarkstart <= epmarkend)
+        if (editorInfo.epmarkstart <= editorInfo.epmarkend)
         {
-          for (c = epmarkstart; c <= epmarkend; c++)
+          for (c = editorInfo.epmarkstart; c <= editorInfo.epmarkend; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            if ((pattern[epnum[epmarkchn]][c*4] < LASTNOTE) &&
-                (pattern[epnum[epmarkchn]][c*4] >= FIRSTNOTE))
-              pattern[epnum[epmarkchn]][c*4]++;
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            if ((pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] < LASTNOTE) &&
+                (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] >= FIRSTNOTE))
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4]++;
           }
         }
         else
         {
-          for (c = epmarkend; c <= epmarkstart; c++)
+          for (c = editorInfo.epmarkend; c <= editorInfo.epmarkstart; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            if ((pattern[epnum[epmarkchn]][c*4] < LASTNOTE) &&
-                (pattern[epnum[epmarkchn]][c*4] >= FIRSTNOTE))
-              pattern[epnum[epmarkchn]][c*4]++;
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            if ((pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] < LASTNOTE) &&
+                (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] >= FIRSTNOTE))
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4]++;
           }
         }
       }
       else
       {
-        for (c = 0; c < pattlen[epnum[epchn]]; c++)
+        for (c = 0; c < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]; c++)
         {
-          if ((pattern[epnum[epchn]][c*4] < LASTNOTE) &&
-              (pattern[epnum[epchn]][c*4] >= FIRSTNOTE))
-            pattern[epnum[epchn]][c*4]++;
+          if ((pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] < LASTNOTE) &&
+              (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] >= FIRSTNOTE))
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4]++;
         }
       }
     }
@@ -506,36 +508,36 @@ void patterncommands(void)
     case KEY_A:
     if (shiftpressed)
     {
-      if (epmarkchn != -1)
+      if (editorInfo.epmarkchn != -1)
       {
-        if (epmarkstart <= epmarkend)
+        if (editorInfo.epmarkstart <= editorInfo.epmarkend)
         {
-          for (c = epmarkstart; c <= epmarkend; c++)
+          for (c = editorInfo.epmarkstart; c <= editorInfo.epmarkend; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            if ((pattern[epnum[epmarkchn]][c*4] <= LASTNOTE) &&
-                (pattern[epnum[epmarkchn]][c*4] > FIRSTNOTE))
-              pattern[epnum[epmarkchn]][c*4]--;
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            if ((pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] <= LASTNOTE) &&
+                (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] > FIRSTNOTE))
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4]--;
           }
         }
         else
         {
-          for (c = epmarkend; c <= epmarkstart; c++)
+          for (c = editorInfo.epmarkend; c <= editorInfo.epmarkstart; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            if ((pattern[epnum[epmarkchn]][c*4] <= LASTNOTE) &&
-                (pattern[epnum[epmarkchn]][c*4] > FIRSTNOTE))
-              pattern[epnum[epmarkchn]][c*4]--;
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            if ((pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] <= LASTNOTE) &&
+                (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] > FIRSTNOTE))
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4]--;
           }
         }
       }
       else
       {
-        for (c = 0; c < pattlen[epnum[epchn]]; c++)
+        for (c = 0; c < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]; c++)
         {
-          if ((pattern[epnum[epchn]][c*4] <= LASTNOTE) &&
-              (pattern[epnum[epchn]][c*4] > FIRSTNOTE))
-            pattern[epnum[epchn]][c*4]--;
+          if ((pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] <= LASTNOTE) &&
+              (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] > FIRSTNOTE))
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4]--;
         }
       }
     }
@@ -544,47 +546,47 @@ void patterncommands(void)
     case KEY_W:
     if (shiftpressed)
     {
-      if (epmarkchn != -1)
+      if (editorInfo.epmarkchn != -1)
       {
-        if (epmarkstart <= epmarkend)
+        if (editorInfo.epmarkstart <= editorInfo.epmarkend)
         {
-          for (c = epmarkstart; c <= epmarkend; c++)
+          for (c = editorInfo.epmarkstart; c <= editorInfo.epmarkend; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            if ((pattern[epnum[epmarkchn]][c*4] <= LASTNOTE) &&
-                (pattern[epnum[epmarkchn]][c*4] >= FIRSTNOTE))
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            if ((pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] <= LASTNOTE) &&
+                (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] >= FIRSTNOTE))
             {
-              pattern[epnum[epmarkchn]][c*4] += 12;
-              if (pattern[epnum[epmarkchn]][c*4] > LASTNOTE)
-                pattern[epnum[epmarkchn]][c*4] = LASTNOTE;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] += 12;
+              if (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] > LASTNOTE)
+                pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] = LASTNOTE;
             }
           }
         }
         else
         {
-          for (c = epmarkend; c <= epmarkstart; c++)
+          for (c = editorInfo.epmarkend; c <= editorInfo.epmarkstart; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            if ((pattern[epnum[epmarkchn]][c*4] <= LASTNOTE) &&
-                (pattern[epnum[epmarkchn]][c*4] >= FIRSTNOTE))
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            if ((pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] <= LASTNOTE) &&
+                (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] >= FIRSTNOTE))
             {
-              pattern[epnum[epmarkchn]][c*4] += 12;
-              if (pattern[epnum[epmarkchn]][c*4] > LASTNOTE)
-                pattern[epnum[epmarkchn]][c*4] = LASTNOTE;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] += 12;
+              if (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] > LASTNOTE)
+                pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] = LASTNOTE;
             }
           }
         }
       }
       else
       {
-        for (c = 0; c < pattlen[epnum[epchn]]; c++)
+        for (c = 0; c < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]; c++)
         {
-          if ((pattern[epnum[epchn]][c*4] <= LASTNOTE) &&
-              (pattern[epnum[epchn]][c*4] >= FIRSTNOTE))
+          if ((pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] <= LASTNOTE) &&
+              (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] >= FIRSTNOTE))
           {
-            pattern[epnum[epchn]][c*4] += 12;
-            if (pattern[epnum[epchn]][c*4] > LASTNOTE)
-              pattern[epnum[epchn]][c*4] = LASTNOTE;
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] += 12;
+            if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] > LASTNOTE)
+              pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] = LASTNOTE;
           }
         }
       }
@@ -594,47 +596,47 @@ void patterncommands(void)
     case KEY_S:
     if (shiftpressed)
     {
-      if (epmarkchn != -1)
+      if (editorInfo.epmarkchn != -1)
       {
-        if (epmarkstart <= epmarkend)
+        if (editorInfo.epmarkstart <= editorInfo.epmarkend)
         {
-          for (c = epmarkstart; c <= epmarkend; c++)
+          for (c = editorInfo.epmarkstart; c <= editorInfo.epmarkend; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            if ((pattern[epnum[epmarkchn]][c*4] <= LASTNOTE) &&
-                (pattern[epnum[epmarkchn]][c*4] >= FIRSTNOTE))
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            if ((pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] <= LASTNOTE) &&
+                (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] >= FIRSTNOTE))
             {
-              pattern[epnum[epmarkchn]][c*4] -= 12;
-              if (pattern[epnum[epmarkchn]][c*4] < FIRSTNOTE)
-                pattern[epnum[epmarkchn]][c*4] = FIRSTNOTE;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] -= 12;
+              if (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] < FIRSTNOTE)
+                pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] = FIRSTNOTE;
             }
           }
         }
         else
         {
-          for (c = epmarkend; c <= epmarkstart; c++)
+          for (c = editorInfo.epmarkend; c <= editorInfo.epmarkstart; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            if ((pattern[epnum[epmarkchn]][c*4] <= LASTNOTE) &&
-                (pattern[epnum[epmarkchn]][c*4] >= FIRSTNOTE))
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            if ((pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] <= LASTNOTE) &&
+                (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] >= FIRSTNOTE))
             {
-              pattern[epnum[epmarkchn]][c*4] -= 12;
-              if (pattern[epnum[epmarkchn]][c*4] < FIRSTNOTE)
-                pattern[epnum[epmarkchn]][c*4] = FIRSTNOTE;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] -= 12;
+              if (pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] < FIRSTNOTE)
+                pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] = FIRSTNOTE;
             }
           }
         }
       }
       else
       {
-        for (c = 0; c < pattlen[epnum[epchn]]; c++)
+        for (c = 0; c < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]; c++)
         {
-          if ((pattern[epnum[epchn]][c*4] <= LASTNOTE) &&
-              (pattern[epnum[epchn]][c*4] >= FIRSTNOTE))
+          if ((pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] <= LASTNOTE) &&
+              (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] >= FIRSTNOTE))
           {
-            pattern[epnum[epchn]][c*4] -= 12;
-            if (pattern[epnum[epchn]][c*4] < FIRSTNOTE)
-              pattern[epnum[epchn]][c*4] = FIRSTNOTE;
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] -= 12;
+            if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] < FIRSTNOTE)
+              pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] = FIRSTNOTE;
           }
         }
       }
@@ -660,28 +662,28 @@ void patterncommands(void)
     case KEY_H:
     if (shiftpressed)
     {
-      switch (pattern[epnum[epchn]][eppos*4+2])
+      switch (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2])
       {
         case CMD_PORTAUP:
         case CMD_PORTADOWN:
         case CMD_VIBRATO:
         case CMD_TONEPORTA:
-        if (pattern[epnum[epchn]][eppos*4+2] == CMD_TONEPORTA)
-          c = eppos-1;
+        if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2] == CMD_TONEPORTA)
+          c = editorInfo.eppos-1;
         else
-          c = eppos;
+          c = editorInfo.eppos;
         for (; c >= 0; c--)
         {
-          if ((pattern[epnum[epchn]][c*4] >= FIRSTNOTE) &&
-              (pattern[epnum[epchn]][c*4] <= LASTNOTE))
+          if ((pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] >= FIRSTNOTE) &&
+              (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] <= LASTNOTE))
           {
             int delta;
             int pitch1;
             int pitch2;
             int pos;
-            int note = pattern[epnum[epchn]][c*4] - FIRSTNOTE;
-            int right = pattern[epnum[epchn]][eppos*4+3] & 0xf;
-            int left = pattern[epnum[epchn]][eppos*4+3] >> 4;
+            int note = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] - FIRSTNOTE;
+            int right = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] & 0xf;
+            int left = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] >> 4;
 
             if (note > MAX_NOTES-1) note--;
             pitch1 = freqtbllo[note] | (freqtblhi[note] << 8);
@@ -691,12 +693,12 @@ void patterncommands(void)
             while (left--) delta <<= 1;
             while (right--) delta >>= 1;
 
-            if (pattern[epnum[epchn]][eppos*4+2] == CMD_VIBRATO)
+            if (pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2] == CMD_VIBRATO)
             {
               if (delta > 0xff) delta = 0xff;
             }
             pos = makespeedtable(delta, MST_RAW, 1);
-            pattern[epnum[epchn]][eppos*4+3] = pos + 1;
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = pos + 1;
             break;
           }
         }
@@ -708,13 +710,13 @@ void patterncommands(void)
     case KEY_L:
     if (shiftpressed)
     {
-      if (epmarkchn == -1)
+      if (editorInfo.epmarkchn == -1)
       {
-        epmarkchn = epchn;
-        epmarkstart = 0;
-        epmarkend = pattlen[epnum[epchn]]-1;
+        editorInfo.epmarkchn = editorInfo.epchn;
+        editorInfo.epmarkstart = 0;
+        editorInfo.epmarkend = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]-1;
       }
-      else epmarkchn = -1;
+      else editorInfo.epmarkchn = -1;
     }
     break;
 
@@ -722,24 +724,24 @@ void patterncommands(void)
     case KEY_X:
     if (shiftpressed)
     {
-      if (epmarkchn != -1)
+      if (editorInfo.epmarkchn != -1)
       {
-        if (epmarkstart <= epmarkend)
+        if (editorInfo.epmarkstart <= editorInfo.epmarkend)
         {
           int d = 0;
-          for (c = epmarkstart; c <= epmarkend; c++)
+          for (c = editorInfo.epmarkstart; c <= editorInfo.epmarkend; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            patterncopybuffer[d*4] = pattern[epnum[epmarkchn]][c*4];
-            patterncopybuffer[d*4+1] = pattern[epnum[epmarkchn]][c*4+1];
-            patterncopybuffer[d*4+2] = pattern[epnum[epmarkchn]][c*4+2];
-            patterncopybuffer[d*4+3] = pattern[epnum[epmarkchn]][c*4+3];
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            patterncopybuffer[d*4] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4];
+            patterncopybuffer[d*4+1] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+1];
+            patterncopybuffer[d*4+2] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+2];
+            patterncopybuffer[d*4+3] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+3];
             if (rawkey == KEY_X)
             {
-              pattern[epnum[epmarkchn]][c*4] = REST;
-              pattern[epnum[epmarkchn]][c*4+1] = 0;
-              pattern[epnum[epmarkchn]][c*4+2] = 0;
-              pattern[epnum[epmarkchn]][c*4+3] = 0;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] = REST;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+1] = 0;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+2] = 0;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+3] = 0;
             }
             d++;
           }
@@ -748,41 +750,41 @@ void patterncommands(void)
         else
         {
           int d = 0;
-          for (c = epmarkend; c <= epmarkstart; c++)
+          for (c = editorInfo.epmarkend; c <= editorInfo.epmarkstart; c++)
           {
-            if (c >= pattlen[epnum[epmarkchn]]) break;
-            patterncopybuffer[d*4] = pattern[epnum[epmarkchn]][c*4];
-            patterncopybuffer[d*4+1] = pattern[epnum[epmarkchn]][c*4+1];
-            patterncopybuffer[d*4+2] = pattern[epnum[epmarkchn]][c*4+2];
-            patterncopybuffer[d*4+3] = pattern[epnum[epmarkchn]][c*4+3];
+            if (c >= pattlen[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum]) break;
+            patterncopybuffer[d*4] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4];
+            patterncopybuffer[d*4+1] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+1];
+            patterncopybuffer[d*4+2] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+2];
+            patterncopybuffer[d*4+3] = pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+3];
             if (rawkey == KEY_X)
             {
-              pattern[epnum[epmarkchn]][c*4] = REST;
-              pattern[epnum[epmarkchn]][c*4+1] = 0;
-              pattern[epnum[epmarkchn]][c*4+2] = 0;
-              pattern[epnum[epmarkchn]][c*4+3] = 0;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4] = REST;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+1] = 0;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+2] = 0;
+              pattern[editorUndoInfo.editorInfo[editorInfo.epmarkchn].epnum][c*4+3] = 0;
             }
             d++;
           }
           patterncopyrows = d;
         }
-        epmarkchn = -1;
+        editorInfo.epmarkchn = -1;
       }
       else
       {
         int d = 0;
-        for (c = 0; c < pattlen[epnum[epchn]]; c++)
+        for (c = 0; c < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]; c++)
         {
-          patterncopybuffer[d*4] = pattern[epnum[epchn]][c*4];
-          patterncopybuffer[d*4+1] = pattern[epnum[epchn]][c*4+1];
-          patterncopybuffer[d*4+2] = pattern[epnum[epchn]][c*4+2];
-          patterncopybuffer[d*4+3] = pattern[epnum[epchn]][c*4+3];
+          patterncopybuffer[d*4] = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4];
+          patterncopybuffer[d*4+1] = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4+1];
+          patterncopybuffer[d*4+2] = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4+2];
+          patterncopybuffer[d*4+3] = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4+3];
           if (rawkey == KEY_X)
           {
-            pattern[epnum[epchn]][c*4] = REST;
-            pattern[epnum[epchn]][c*4+1] = 0;
-            pattern[epnum[epchn]][c*4+2] = 0;
-            pattern[epnum[epchn]][c*4+3] = 0;
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4] = REST;
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4+1] = 0;
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4+2] = 0;
+            pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][c*4+3] = 0;
           }
           d++;
         }
@@ -796,73 +798,73 @@ void patterncommands(void)
     {
       for (c = 0; c < patterncopyrows; c++)
       {
-        if (eppos >= pattlen[epnum[epchn]]) break;
-        pattern[epnum[epchn]][eppos*4] = patterncopybuffer[c*4];
-        pattern[epnum[epchn]][eppos*4+1] = patterncopybuffer[c*4+1];
-        pattern[epnum[epchn]][eppos*4+2] = patterncopybuffer[c*4+2];
-        pattern[epnum[epchn]][eppos*4+3] = patterncopybuffer[c*4+3];
-        eppos++;
+        if (editorInfo.eppos >= pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) break;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4] = patterncopybuffer[c*4];
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] = patterncopybuffer[c*4+1];
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2] = patterncopybuffer[c*4+2];
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = patterncopybuffer[c*4+3];
+        editorInfo.eppos++;
       }
     }
     break;
 
     case KEY_DEL:
-    if (epmarkchn == epchn) epmarkchn = -1;
-    if ((pattlen[epnum[epchn]]-eppos)*4-4 >= 0)
+    if (editorInfo.epmarkchn == editorInfo.epchn) editorInfo.epmarkchn = -1;
+    if ((pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]-editorInfo.eppos)*4-4 >= 0)
     {
-      memmove(&pattern[epnum[epchn]][eppos*4],
-        &pattern[epnum[epchn]][eppos*4+4],
-        (pattlen[epnum[epchn]]-eppos)*4-4);
-      pattern[epnum[epchn]][pattlen[epnum[epchn]]*4-4] = REST;
-      pattern[epnum[epchn]][pattlen[epnum[epchn]]*4-3] = 0x00;
-      pattern[epnum[epchn]][pattlen[epnum[epchn]]*4-2] = 0x00;
-      pattern[epnum[epchn]][pattlen[epnum[epchn]]*4-1] = 0x00;
+      memmove(&pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4],
+        &pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+4],
+        (pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]-editorInfo.eppos)*4-4);
+      pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]*4-4] = REST;
+      pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]*4-3] = 0x00;
+      pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]*4-2] = 0x00;
+      pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]*4-1] = 0x00;
     }
     else
     {
-      if (eppos == pattlen[epnum[epchn]])
+      if (editorInfo.eppos == pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
       {
-        if (pattlen[epnum[epchn]] > 1)
+        if (pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum] > 1)
         {
-          pattern[epnum[epchn]][pattlen[epnum[epchn]]*4-4] = ENDPATT;
-          pattern[epnum[epchn]][pattlen[epnum[epchn]]*4-3] = 0x00;
-          pattern[epnum[epchn]][pattlen[epnum[epchn]]*4-2] = 0x00;
-          pattern[epnum[epchn]][pattlen[epnum[epchn]]*4-1] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]*4-4] = ENDPATT;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]*4-3] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]*4-2] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]*4-1] = 0x00;
           countthispattern();
-          eppos = pattlen[epnum[epchn]];
+          editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
         }
       }
     }
     break;
 
     case KEY_INS:
-    if (epmarkchn == epchn) epmarkchn = -1;
-    if ((pattlen[epnum[epchn]]-eppos)*4-4 >= 0)
+    if (editorInfo.epmarkchn == editorInfo.epchn) editorInfo.epmarkchn = -1;
+    if ((pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]-editorInfo.eppos)*4-4 >= 0)
     {
-      memmove(&pattern[epnum[epchn]][eppos*4+4],
-        &pattern[epnum[epchn]][eppos*4],
-        (pattlen[epnum[epchn]]-eppos)*4-4);
-      pattern[epnum[epchn]][eppos*4] = REST;
-      pattern[epnum[epchn]][eppos*4+1] = 0x00;
-      pattern[epnum[epchn]][eppos*4+2] = 0x00;
-      pattern[epnum[epchn]][eppos*4+3] = 0x00;
+      memmove(&pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+4],
+        &pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4],
+        (pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]-editorInfo.eppos)*4-4);
+      pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4] = REST;
+      pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] = 0x00;
+      pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2] = 0x00;
+      pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = 0x00;
     }
     else
     {
-      if (eppos == pattlen[epnum[epchn]])
+      if (editorInfo.eppos == pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
       {
-        if (pattlen[epnum[epchn]] < MAX_PATTROWS)
+        if (pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum] < MAX_PATTROWS)
         {
-          pattern[epnum[epchn]][eppos*4] = REST;
-          pattern[epnum[epchn]][eppos*4+1] = 0x00;
-          pattern[epnum[epchn]][eppos*4+2] = 0x00;
-          pattern[epnum[epchn]][eppos*4+3] = 0x00;
-          pattern[epnum[epchn]][eppos*4+4] = ENDPATT;
-          pattern[epnum[epchn]][eppos*4+5] = 0x00;
-          pattern[epnum[epchn]][eppos*4+6] = 0x00;
-          pattern[epnum[epchn]][eppos*4+7] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4] = REST;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+4] = ENDPATT;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+5] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+6] = 0x00;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+7] = 0x00;
           countthispattern();
-          eppos = pattlen[epnum[epchn]];
+          editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
         }
       }
     }
@@ -875,19 +877,19 @@ void patterncommands(void)
     {
       if (lastsonginit != PLAY_PATTERN)
       {
-        if (eseditpos != espos[eschn])
+        if (editorInfo.eseditpos != editorUndoInfo.editorInfo[editorInfo.eschn].espos)
         {
           int c;
 
           for (c = 0; c < MAX_CHN; c++)
           {
-            if (eseditpos < songlen[esnum][c]) espos[c] = eseditpos;
-            if (esend[c] <= espos[c]) esend[c] = 0;
+            if (editorInfo.eseditpos < songlen[editorInfo.esnum][c]) editorUndoInfo.editorInfo[c].espos = editorInfo.eseditpos;
+            if (editorUndoInfo.editorInfo[c].esend <= editorUndoInfo.editorInfo[c].espos) editorUndoInfo.editorInfo[c].esend = 0;
           }
         }
-        initsongpos(esnum, PLAY_POS, eppos);
+        initsongpos(editorInfo.esnum, PLAY_POS, editorInfo.eppos);
       }
-      else initsongpos(esnum, PLAY_PATTERN, eppos);
+      else initsongpos(editorInfo.esnum, PLAY_PATTERN, editorInfo.eppos);
       followplay = 0;
     }
     break;
@@ -895,55 +897,55 @@ void patterncommands(void)
     case KEY_RIGHT:
     if (!shiftpressed)
     {
-      epcolumn++;
-      if (epcolumn >= 6)
+      editorInfo.epcolumn++;
+      if (editorInfo.epcolumn >= 6)
       {
-        epcolumn = 0;
-        epchn++;
-        if (epchn >= MAX_CHN) epchn = 0;
-        if (eppos > pattlen[epnum[epchn]]) eppos = pattlen[epnum[epchn]];
+        editorInfo.epcolumn = 0;
+        editorInfo.epchn++;
+        if (editorInfo.epchn >= MAX_CHN) editorInfo.epchn = 0;
+        if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
       }
     }
     else
     {
-      if (epnum[epchn] < MAX_PATT-1)
+      if (editorUndoInfo.editorInfo[editorInfo.epchn].epnum < MAX_PATT-1)
       {
-        epnum[epchn]++;
-        if (eppos > pattlen[epnum[epchn]]) eppos = pattlen[epnum[epchn]];
+        editorUndoInfo.editorInfo[editorInfo.epchn].epnum++;
+        if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
       }
-      if (epchn == epmarkchn) epmarkchn = -1;
+      if (editorInfo.epchn == editorInfo.epmarkchn) editorInfo.epmarkchn = -1;
     }
     break;
 
     case KEY_LEFT:
     if (!shiftpressed)
     {
-      epcolumn--;
-      if (epcolumn < 0)
+      editorInfo.epcolumn--;
+      if (editorInfo.epcolumn < 0)
       {
-        epcolumn = 5;
-        epchn--;
-        if (epchn < 0) epchn = MAX_CHN-1;
-        if (eppos > pattlen[epnum[epchn]]) eppos = pattlen[epnum[epchn]];
+        editorInfo.epcolumn = 5;
+        editorInfo.epchn--;
+        if (editorInfo.epchn < 0) editorInfo.epchn = MAX_CHN-1;
+        if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
       }
     }
     else
     {
-      if (epnum[epchn] > 0)
+      if (editorUndoInfo.editorInfo[editorInfo.epchn].epnum > 0)
       {
-        epnum[epchn]--;
-        if (eppos > pattlen[epnum[epchn]]) eppos = pattlen[epnum[epchn]];
+        editorUndoInfo.editorInfo[editorInfo.epchn].epnum--;
+        if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
       }
-      if (epchn == epmarkchn) epmarkchn = -1;
+      if (editorInfo.epchn == editorInfo.epmarkchn) editorInfo.epmarkchn = -1;
     }
     break;
 
     case KEY_HOME:
-    while (eppos != 0) patternup();
+    while (editorInfo.eppos != 0) patternup();
     break;
 
     case KEY_END:
-    while (eppos != pattlen[epnum[epchn]]) patterndown();
+    while (editorInfo.eppos != pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) patterndown();
     break;
 
     case KEY_PGUP:
@@ -967,15 +969,15 @@ void patterncommands(void)
     case KEY_APOST2:
     if (!shiftpressed)
     {
-      epchn++;
-      if (epchn >= MAX_CHN) epchn = 0;
-      if (eppos > pattlen[epnum[epchn]]) eppos = pattlen[epnum[epchn]];
+      editorInfo.epchn++;
+      if (editorInfo.epchn >= MAX_CHN) editorInfo.epchn = 0;
+      if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
     }
     else
     {
-      epchn--;
-      if (epchn < 0) epchn = MAX_CHN-1;
-      if (eppos > pattlen[epnum[epchn]]) eppos = pattlen[epnum[epchn]];
+      editorInfo.epchn--;
+      if (editorInfo.epchn < 0) editorInfo.epchn = MAX_CHN-1;
+      if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
     }
     break;
     
@@ -986,10 +988,10 @@ void patterncommands(void)
       mutechannel(rawkey - KEY_1);
     break;
   }
-  if ((keypreset == KEY_DMC) && (hexnybble >= 0) && (hexnybble <= 7) && (!epcolumn))
+  if ((keypreset == KEY_DMC) && (hexnybble >= 0) && (hexnybble <= 7) && (!editorInfo.epcolumn))
   {
-    int oldbyte = pattern[epnum[epchn]][eppos*4];
-    epoctave = hexnybble;
+    int oldbyte = pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4];
+    editorInfo.epoctave = hexnybble;
     if ((oldbyte >= FIRSTNOTE) && (oldbyte <= LASTNOTE))
     {
       int newbyte;
@@ -997,72 +999,72 @@ void patterncommands(void)
 
       if (recordmode)
       {
-        newbyte = oldnote+epoctave*12 + FIRSTNOTE;
+        newbyte = oldnote+editorInfo.epoctave*12 + FIRSTNOTE;
         if (newbyte <= LASTNOTE)
         {
-          pattern[epnum[epchn]][eppos*4] = newbyte;
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4] = newbyte;
         }
       }
       if ((recordmode) && (autoadvance < 1))
       {
-        eppos++;
-        if (eppos > pattlen[epnum[epchn]])
+        editorInfo.eppos++;
+        if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
         {
-          eppos = 0;
+          editorInfo.eppos = 0;
         }
       }
     }
   }
 
-  if ((hexnybble >= 0) && (epcolumn) && (recordmode))
+  if ((hexnybble >= 0) && (editorInfo.epcolumn) && (recordmode))
   {
-    if (eppos < pattlen[epnum[epchn]])
+    if (editorInfo.eppos < pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
     {
-      switch(epcolumn)
+      switch(editorInfo.epcolumn)
       {
         case 1:
-        pattern[epnum[epchn]][eppos*4+1] &= 0x0f;
-        pattern[epnum[epchn]][eppos*4+1] |= hexnybble << 4;
-        pattern[epnum[epchn]][eppos*4+1] &= (MAX_INSTR - 1);
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] &= 0x0f;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] |= hexnybble << 4;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] &= (MAX_INSTR - 1);
         break;
 
         case 2:
-        pattern[epnum[epchn]][eppos*4+1] &= 0xf0;
-        pattern[epnum[epchn]][eppos*4+1] |= hexnybble;
-        pattern[epnum[epchn]][eppos*4+1] &= (MAX_INSTR - 1);
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] &= 0xf0;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] |= hexnybble;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+1] &= (MAX_INSTR - 1);
         break;
 
         case 3:
-        pattern[epnum[epchn]][eppos*4+2] = hexnybble;
-        if (!pattern[epnum[epchn]][eppos*4+2])
-          pattern[epnum[epchn]][eppos*4+3] = 0;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2] = hexnybble;
+        if (!pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2])
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = 0;
         break;
 
         case 4:
-        pattern[epnum[epchn]][eppos*4+3] &= 0x0f;
-        pattern[epnum[epchn]][eppos*4+3] |= hexnybble << 4;
-        if (!pattern[epnum[epchn]][eppos*4+2])
-          pattern[epnum[epchn]][eppos*4+3] = 0;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] &= 0x0f;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] |= hexnybble << 4;
+        if (!pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2])
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = 0;
         break;
 
         case 5:
-        pattern[epnum[epchn]][eppos*4+3] &= 0xf0;
-        pattern[epnum[epchn]][eppos*4+3] |= hexnybble;
-        if (!pattern[epnum[epchn]][eppos*4+2])
-          pattern[epnum[epchn]][eppos*4+3] = 0;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] &= 0xf0;
+        pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] |= hexnybble;
+        if (!pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+2])
+          pattern[editorUndoInfo.editorInfo[editorInfo.epchn].epnum][editorInfo.eppos*4+3] = 0;
         break;
       }
     }
     if (autoadvance < 2)
     {
-      eppos++;
-      if (eppos > pattlen[epnum[epchn]])
+      editorInfo.eppos++;
+      if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
       {
-        eppos = 0;
+        editorInfo.eppos = 0;
       }
     }
   }
-  epview = eppos-VISIBLEPATTROWS/2;
+  editorInfo.epview = editorInfo.eppos-VISIBLEPATTROWS/2;
 }
 
 
@@ -1070,61 +1072,61 @@ void patterndown(void)
 {
   if (shiftpressed)
   {
-    if ((epmarkchn != epchn) || (eppos != epmarkend))
+    if ((editorInfo.epmarkchn != editorInfo.epchn) || (editorInfo.eppos != editorInfo.epmarkend))
     {
-      epmarkchn = epchn;
-      epmarkstart = epmarkend = eppos;
+      editorInfo.epmarkchn = editorInfo.epchn;
+      editorInfo.epmarkstart = editorInfo.epmarkend = editorInfo.eppos;
     }
   }
-  eppos++;
-  if (eppos > pattlen[epnum[epchn]])
+  editorInfo.eppos++;
+  if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum])
   {
-    eppos = 0;
+    editorInfo.eppos = 0;
   }
-  if (shiftpressed) epmarkend = eppos;
+  if (shiftpressed) editorInfo.epmarkend = editorInfo.eppos;
 }
 
 void patternup(void)
 {
   if (shiftpressed)
   {
-    if ((epmarkchn != epchn) || (eppos != epmarkend))
+    if ((editorInfo.epmarkchn != editorInfo.epchn) || (editorInfo.eppos != editorInfo.epmarkend))
     {
-      epmarkchn = epchn;
-      epmarkstart = epmarkend = eppos;
+      editorInfo.epmarkchn = editorInfo.epchn;
+      editorInfo.epmarkstart = editorInfo.epmarkend = editorInfo.eppos;
     }
   }
-  eppos--;
-  if (eppos < 0)
+  editorInfo.eppos--;
+  if (editorInfo.eppos < 0)
   {
-    eppos = pattlen[epnum[epchn]];
+    editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
   }
-  if (shiftpressed) epmarkend = eppos;
+  if (shiftpressed) editorInfo.epmarkend = editorInfo.eppos;
 }
 
 void prevpattern(void)
 {
-  if (epnum[epchn] > 0)
+  if (editorUndoInfo.editorInfo[editorInfo.epchn].epnum > 0)
   {
-    epnum[epchn]--;
-    if (eppos > pattlen[epnum[epchn]]) eppos = pattlen[epnum[epchn]];
+    editorUndoInfo.editorInfo[editorInfo.epchn].epnum--;
+    if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
   }
-  if (epchn == epmarkchn) epmarkchn = -1;
+  if (editorInfo.epchn == editorInfo.epmarkchn) editorInfo.epmarkchn = -1;
 }
 
 void nextpattern(void)
 {
-  if (epnum[epchn] < MAX_PATT-1)
+  if (editorUndoInfo.editorInfo[editorInfo.epchn].epnum < MAX_PATT-1)
   {
-    epnum[epchn]++;
-    if (eppos > pattlen[epnum[epchn]]) eppos = pattlen[epnum[epchn]];
+    editorUndoInfo.editorInfo[editorInfo.epchn].epnum++;
+    if (editorInfo.eppos > pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum]) editorInfo.eppos = pattlen[editorUndoInfo.editorInfo[editorInfo.epchn].epnum];
   }
-  if (epchn == epmarkchn) epmarkchn = -1;
+  if (editorInfo.epchn == editorInfo.epmarkchn) editorInfo.epmarkchn = -1;
 }
 
 void shrinkpattern(void)
 {
-  int c = epnum[epchn];
+  int c = editorUndoInfo.editorInfo[editorInfo.epchn].epnum;
   int l = pattlen[c];
   int nl = l/2;
   int d;
@@ -1146,14 +1148,14 @@ void shrinkpattern(void)
   pattern[c][nl*4+2] = 0;
   pattern[c][nl*4+3] = 0;
 
-  eppos /= 2;
+  editorInfo.eppos /= 2;
 
   countthispattern();
 }
 
 void expandpattern(void)
 {
-  int c = epnum[epchn];
+  int c = editorUndoInfo.editorInfo[editorInfo.epchn].epnum;
   int l = pattlen[c];
   int nl = l*2;
   int d;
@@ -1184,80 +1186,86 @@ void expandpattern(void)
 
   memcpy(pattern[c], temp, (nl+1)*4);
 
-  eppos *= 2;
+  editorInfo.eppos *= 2;
 
   countthispattern();
 }
 
 void splitpattern(void)
 {
-  int c = epnum[epchn];
+  int c = editorUndoInfo.editorInfo[editorInfo.epchn].epnum;
   int l = pattlen[c];
   int d;
 
-  if (eppos == 0) return;
-  if (eppos == l) return;
+  if (editorInfo.eppos == 0) return;
+  if (editorInfo.eppos == l) return;
   
   stopsong();
 
+  updateUndoBuffer(UNDO_AREA_CHANNEL_EDITOR_INFO);
+  undoAreaSetCheckForChange(UNDO_AREA_CHANNEL_EDITOR_INFO, 0, UNDO_AREA_DIRTY_CHECK);
+
   if (insertpattern(c))
   {
-    int oldesnum = esnum;
-    int oldeschn = eschn;
-    int oldeseditpos = eseditpos;
+    int oldesnum = editorInfo.esnum;
+    int oldeschn = editorInfo.eschn;
+    int oldeseditpos = editorInfo.eseditpos;
 
-    for (d = eppos; d <= l; d++)
+    for (d = editorInfo.eppos; d <= l; d++)
     {
-      pattern[c+1][(d-eppos)*4] = pattern[c][d*4];
-      pattern[c+1][(d-eppos)*4+1] = pattern[c][d*4+1];
-      pattern[c+1][(d-eppos)*4+2] = pattern[c][d*4+2];
-      pattern[c+1][(d-eppos)*4+3] = pattern[c][d*4+3];
+      pattern[c+1][(d-editorInfo.eppos)*4] = pattern[c][d*4];
+      pattern[c+1][(d-editorInfo.eppos)*4+1] = pattern[c][d*4+1];
+      pattern[c+1][(d-editorInfo.eppos)*4+2] = pattern[c][d*4+2];
+      pattern[c+1][(d-editorInfo.eppos)*4+3] = pattern[c][d*4+3];
     }
-    pattern[c][eppos*4] = ENDPATT;
-    pattern[c][eppos*4+1] = 0;
-    pattern[c][eppos*4+2] = 0;
-    pattern[c][eppos*4+3] = 0;
+    pattern[c][editorInfo.eppos*4] = ENDPATT;
+    pattern[c][editorInfo.eppos*4+1] = 0;
+    pattern[c][editorInfo.eppos*4+2] = 0;
+    pattern[c][editorInfo.eppos*4+3] = 0;
 
     countpatternlengths();
 
-    for (esnum = 0; esnum < MAX_SONGS; esnum++)
+    for (editorInfo.esnum = 0; editorInfo.esnum < MAX_SONGS; editorInfo.esnum++)
     {
-      for (eschn = 0; eschn < MAX_CHN; eschn++)
+      for (editorInfo.eschn = 0; editorInfo.eschn < MAX_CHN; editorInfo.eschn++)
       {
-        for (eseditpos = 0; eseditpos < songlen[esnum][eschn]; eseditpos++)
+        for (editorInfo.eseditpos = 0; editorInfo.eseditpos < songlen[editorInfo.esnum][editorInfo.eschn]; editorInfo.eseditpos++)
         {
-          if (songorder[esnum][eschn][eseditpos] == c)
+          if (songorder[editorInfo.esnum][editorInfo.eschn][editorInfo.eseditpos] == c)
           {
-            songorder[esnum][eschn][eseditpos] = c+1;
+            songorder[editorInfo.esnum][editorInfo.eschn][editorInfo.eseditpos] = c+1;
             insertorder(c);
           }
         }
       }
     }
-    eschn = oldeschn;
-    eseditpos = oldeseditpos;
-    esnum = oldesnum;
+    editorInfo.eschn = oldeschn;
+    editorInfo.eseditpos = oldeseditpos;
+    editorInfo.esnum = oldesnum;
   }
 }
 
 void joinpattern(void)
 {
-  int c = epnum[epchn];
+  int c = editorUndoInfo.editorInfo[editorInfo.epchn].epnum;
   int d;
 
-  if (eschn != epchn) return;
-  if (songorder[esnum][epchn][eseditpos] != c) return;
-  d = songorder[esnum][epchn][eseditpos + 1];
+  if (editorInfo.eschn != editorInfo.epchn) return;
+  if (songorder[editorInfo.esnum][editorInfo.epchn][editorInfo.eseditpos] != c) return;
+  d = songorder[editorInfo.esnum][editorInfo.epchn][editorInfo.eseditpos + 1];
   if (d >= MAX_PATT) return;
   if (pattlen[c] + pattlen[d] > MAX_PATTROWS) return;
 
   stopsong();
 
+  updateUndoBuffer(UNDO_AREA_CHANNEL_EDITOR_INFO);
+  undoAreaSetCheckForChange(UNDO_AREA_CHANNEL_EDITOR_INFO, 0, UNDO_AREA_DIRTY_CHECK);
+
   if (insertpattern(c))
   {
-    int oldesnum = esnum;
-    int oldeschn = eschn;
-    int oldeseditpos = eseditpos;
+    int oldesnum = editorInfo.esnum;
+    int oldeschn = editorInfo.eschn;
+    int oldeseditpos = editorInfo.eseditpos;
     int e, f;
     d++;
 
@@ -1283,23 +1291,23 @@ void joinpattern(void)
 
     countpatternlengths();
 
-    for (esnum = 0; esnum < MAX_SONGS; esnum++)
+    for (editorInfo.esnum = 0; editorInfo.esnum < MAX_SONGS; editorInfo.esnum++)
     {
-      for (eschn = 0; eschn < MAX_CHN; eschn++)
+      for (editorInfo.eschn = 0; editorInfo.eschn < MAX_CHN; editorInfo.eschn++)
       {
-        for (eseditpos = 0; eseditpos < songlen[esnum][eschn]; eseditpos++)
+        for (editorInfo.eseditpos = 0; editorInfo.eseditpos < songlen[editorInfo.esnum][editorInfo.eschn]; editorInfo.eseditpos++)
         {
-          if ((songorder[esnum][eschn][eseditpos] == c) && (songorder[esnum][eschn][eseditpos+1] == d))
+          if ((songorder[editorInfo.esnum][editorInfo.eschn][editorInfo.eseditpos] == c) && (songorder[editorInfo.esnum][editorInfo.eschn][editorInfo.eseditpos+1] == d))
           {
             deleteorder();
-            songorder[esnum][eschn][eseditpos] = c+1;
+            songorder[editorInfo.esnum][editorInfo.eschn][editorInfo.eseditpos] = c+1;
           }
         }
       }
     }
-    eschn = oldeschn;
-    eseditpos = oldeseditpos;
-    esnum = oldesnum;
+    editorInfo.eschn = oldeschn;
+    editorInfo.eseditpos = oldeseditpos;
+    editorInfo.esnum = oldesnum;
 
     findusedpatterns();
     {

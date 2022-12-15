@@ -35,6 +35,8 @@ unsigned char freqtblhi[] = {
   0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
 CHN chn[MAX_CHN];
+EDITOR_UNDO_INFO editorUndoInfo;
+
 unsigned char filterctrl = 0;
 unsigned char filtertype = 0;
 unsigned char filtercutoff = 0;
@@ -60,17 +62,17 @@ void initchannels(void)
   {
     chn[c].trans = 0;
     chn[c].instr = 1;
-    if (multiplier)
-      cptr->tempo = 6*multiplier-1;
+    if (editorInfo.multiplier)
+      cptr->tempo = 6* editorInfo.multiplier-1;
     else
       cptr->tempo = 6-1;
     cptr++;
   }
 
-  if (multiplier)
+  if (editorInfo.multiplier)
   {
-    funktable[0] = 9*multiplier-1;
-    funktable[1] = 6*multiplier-1;
+    funktable[0] = 9* editorInfo.multiplier-1;
+    funktable[1] = 6* editorInfo.multiplier-1;
   }
   else
   {
@@ -129,8 +131,8 @@ void playtestnote(int note, int ins, int chnnum)
     chn[chnnum].gate = 0xfe; // Keyoff
     if (!(instr[ins].gatetimer & 0x80))
     {
-      sidreg[0x5+chnnum*7] = adparam>>8; // Hardrestart
-      sidreg[0x6+chnnum*7] = adparam&0xff;
+      sidreg[0x5+chnnum*7] = editorInfo.adparam>>8; // Hardrestart
+      sidreg[0x6+chnnum*7] = editorInfo.adparam&0xff;
     }
   }
 
@@ -178,7 +180,7 @@ void playroutine(void)
 
     if ((songinit == 0x02) || (songinit == 0x03))
     {
-      if ((espos[0] >= songlen[psnum][0]) || (espos[1] >= songlen[psnum][1]) || (espos[2] >= songlen[psnum][2]))
+      if ((editorUndoInfo.editorInfo[0].espos >= songlen[psnum][0]) || (editorUndoInfo.editorInfo[1].espos >= songlen[psnum][1]) || (editorUndoInfo.editorInfo[2].espos >= songlen[psnum][2]))
          songinit = 0x01;
     }
 
@@ -194,8 +196,8 @@ void playroutine(void)
       cptr->ptr[WTBL] = 0;
       cptr->newnote = 0;
       cptr->repeat = 0;
-      if (multiplier)
-        cptr->tick = 6*multiplier-1;
+      if (editorInfo.multiplier)
+        cptr->tick = 6* editorInfo.multiplier-1;
       else
         cptr->tick = 6-1;
       cptr->gatetimer = instr[1].gatetimer & 0x3f;
@@ -205,11 +207,11 @@ void playroutine(void)
       switch (songinit)
       {
         case PLAY_BEGINNING:
-        if (multiplier)
+        if (editorInfo.multiplier)
         {
-          funktable[0] = 9*multiplier-1;
-          funktable[1] = 6*multiplier-1;
-          cptr->tempo = 6*multiplier-1;
+          funktable[0] = 9* editorInfo.multiplier-1;
+          funktable[1] = 6* editorInfo.multiplier-1;
+          cptr->tempo = 6* editorInfo.multiplier-1;
         }
         else
         {
@@ -227,13 +229,13 @@ void playroutine(void)
         case PLAY_PATTERN:
         cptr->advance = 0;
         cptr->pattptr = startpattpos * 4;
-        cptr->pattnum = epnum[c];
+        cptr->pattnum = editorUndoInfo.editorInfo[c].epnum;
         if (cptr->pattptr >= (pattlen[cptr->pattnum] * 4))
           cptr->pattptr = 0;
         break;
 
         case PLAY_POS:
-        cptr->songptr = espos[c];
+        cptr->songptr = editorUndoInfo.editorInfo[c].espos;
         sequencer(c, cptr);
         break;
       }
@@ -308,8 +310,8 @@ void playroutine(void)
       // Reset tempo in jammode
       if ((songinit == PLAY_STOPPED) && (cptr->tempo < 2))
       {
-        if (multiplier)
-          cptr->tempo = 6*multiplier-1;
+        if (editorInfo.multiplier)
+          cptr->tempo = 6* editorInfo.multiplier-1;
         else
           cptr->tempo = 6-1;
       }
@@ -725,7 +727,7 @@ void playroutine(void)
 
       // Tick N command
       TICKNEFFECTS:
-      if ((!optimizerealtime) || (cptr->tick))
+      if ((!editorInfo.optimizerealtime) || (cptr->tick))
       {
         switch(cptr->command)
         {
@@ -843,7 +845,7 @@ void playroutine(void)
       }
 
       PULSEEXEC:
-      if (optimizepulse)
+      if (editorInfo.optimizepulse)
       {
         if ((songinit != PLAY_STOPPED) && (cptr->tick == cptr->gatetimer)) goto GETNEWNOTES;
       }
@@ -851,7 +853,7 @@ void playroutine(void)
       if (cptr->ptr[PTBL])
       {
         // Skip pulse when sequencer has been executed
-        if (optimizepulse)
+        if (editorInfo.optimizepulse)
         {
           if ((!cptr->tick) && (!cptr->pattptr)) goto NEXTCHN;
         }
@@ -926,8 +928,8 @@ void playroutine(void)
               cptr->gate = 0xfe;
               if (!(instr[cptr->instr].gatetimer & 0x80))
               {
-                sidreg[0x5+7*c] = adparam>>8;
-                sidreg[0x6+7*c] = adparam&0xff;
+                sidreg[0x5+7*c] = editorInfo.adparam>>8;
+                sidreg[0x6+7*c] = editorInfo.adparam&0xff;
               }
             }
           }
@@ -996,8 +998,8 @@ void sequencer(int c, CHN *cptr)
       cptr->pattptr = 0;
       
     // Check for playback endpos
-    if ((lastsonginit != PLAY_BEGINNING) && (esend[c] > 0) && (esend[c] > espos[c]) && (cptr->songptr > esend[c]) && (espos[c] < songlen[psnum][c]))
-      cptr->songptr = espos[c];
+    if ((lastsonginit != PLAY_BEGINNING) && (editorUndoInfo.editorInfo[c].esend > 0) && (editorUndoInfo.editorInfo[c].esend > editorUndoInfo.editorInfo[c].espos) && (cptr->songptr > editorUndoInfo.editorInfo[c].esend) && (editorUndoInfo.editorInfo[c].espos < songlen[psnum][c]))
+      cptr->songptr = editorUndoInfo.editorInfo[c].espos;
   }
   SEQDONE: {}
 }

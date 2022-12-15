@@ -36,7 +36,7 @@ int defaultpatternlength = 64;
 int cursorflash = 0;
 int cursorcolortable[] = {1,2,7,2};
 int exitprogram = 0;
-int eacolumn = 0;
+//int eacolumn = 0;
 int eamode = 0;
 
 unsigned keypreset = KEY_TRACKER;
