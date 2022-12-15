@@ -1096,7 +1096,7 @@ void generalcommands(void)
 		break;
 
 	case KEY_Z:
-		if (ctrlpressed)
+		if (ctrlpressed || metapressed)
 			undoPerform();
 		break;
 

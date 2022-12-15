@@ -19,6 +19,7 @@ int shiftpressed = 0;
 int shiftonlypressed = 0;
 int ctrlpressed = 0;
 int altpressed = 0;
+int metapressed = 0;
 int cursorflashdelay = 0;
 int mouseb = 0;
 int prevmouseb = 0;
@@ -618,6 +619,8 @@ void getkey(void)
 
   shiftpressed = 0;
   ctrlpressed = 0;
+  altpressed = 0;
+  metapressed = 0;
   shiftonlypressed = 0;
 
   if ((win_keystate[KEY_LEFTSHIFT])||(win_keystate[KEY_RIGHTSHIFT])||
@@ -628,7 +631,13 @@ void getkey(void)
 	  shiftonlypressed = 1;
 
   if ((win_keystate[KEY_CTRL]) || (win_keystate[KEY_RIGHTCTRL]))
-	  ctrlpressed=1;
+	  ctrlpressed = 1;
+
+  if (win_keystate[KEY_ALT] || win_keystate[KEY_RIGHTALT])
+      altpressed = 1;
+
+  if (win_keystate[SDLK_LMETA] || win_keystate[SDLK_RMETA])
+    metapressed = 1;
 
   if (rawkey == SDLK_KP_ENTER)
   {
@@ -646,10 +655,6 @@ void getkey(void)
   if (rawkey == SDLK_KP7) key = '7';
   if (rawkey == SDLK_KP8) key = '8';
   if (rawkey == SDLK_KP9) key = '9';
-
-  altpressed = 0;
-  if (win_keystate[KEY_ALT] || win_keystate[KEY_RIGHTALT])
-      altpressed = 1;
 
   if (rawkey == SDLK_INSERT) 
     // some keyboard/systems provide a key code that gets interpreted as additional keystroke
