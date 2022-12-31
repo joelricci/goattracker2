@@ -77,7 +77,8 @@ char instrpath[MAX_PATHNAME];
 char packedpath[MAX_PATHNAME];
 char packedsongname[MAX_PATHNAME];
 
-char *programname = "$VER: GoatTracker v2.73";
+char *programname = PROGRAMNAME;
+char *patchname = PATCHNAME;
 
 char textbuffer[MAX_PATHNAME];
 

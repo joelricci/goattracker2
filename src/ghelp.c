@@ -19,6 +19,14 @@ int printrows(int column, int row, int color, char *strings[] ) {
 
 void onlinehelp(int standalone,int context)
 {
+  char *mackeys[] = {
+    "FN+SHIFT+BACKSPACE  Insert",
+    "(or) ALT+BACKSPACE  Insert",
+    "FN+BACKSPACE        Delete",
+    "CMD+Z               Undo",
+    NULL
+  };
+
   char *genkeys[] = {
     "F1  Play from beginning",
     "F2  Play from current position",
@@ -37,19 +45,19 @@ void onlinehelp(int standalone,int context)
     "SHIFT+F5-F6 Change speed multiplier",
     "SHIFT+F7 Change hardrestart ADSR",
     "SHIFT+F8 Switch between 6581/8580 SID",
+    "SHIFT+F9 Toggle ReSID interpolation",
     "SHIFT+F10 Merge-load song",
     "SHIFT+, . Move song startpos & restart",
     "TAB Cycle between editing modes",
     "INS Insert row (Press on endmark to",
     "DEL Delete row change patt. length)",
-	//"CTRL+Z Undo",
     "SHIFT+ESC Clear/optimize all musicdata",
-    "ESC Exit program   CTRL+Z Undo",
+    "ESC Exit program",
     NULL
   };
 
   char *patternkeys[] = {
-    "Enter notes like on piano (PT or DMC)",
+    "Enter notes like on a piano",
     "0-9 & A-F to enter commands",
     "SPC Switch between jam/editmode",
     "BACKSPC Insert rest",
@@ -249,6 +257,7 @@ void onlinehelp(int standalone,int context)
   {
     int left = hview + 2;
     int right = hview + 2;
+    int mac = hview + 2;
 
     clearscreen();
     if(!context) {
@@ -259,6 +268,9 @@ void onlinehelp(int standalone,int context)
       printtext(40,right++, HELP_HEADER, "PATTERN EDIT MODE");
       right = printrows(40,right,HELP_NORMAL, patternkeys);
       right++;
+
+      printtext(73, mac++, HELP_HEADER, "MAC KEYS");
+      printrows(73, mac, HELP_NORMAL, mackeys);
     
       printtext(0, left++, HELP_HEADER, "SONG EDIT MODE");
       left = printrows(0,left,HELP_NORMAL, songkeys);

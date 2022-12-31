@@ -26,6 +26,35 @@ void printmainscreen(void)
 {
   clearscreen();
   printstatus();
+  
+  printtext(36, 35, 0x07, "Tweaks & fixes by");
+  printtext(54, 35, 0x0f, "RaveGuru");
+  printtext(55, 35, 0x0a, "aveGur");
+  printtext(56, 35, 0x07, "veGu");
+  printtext(57, 35, 0x03, "e");
+  printtext(58, 35, 0x08, "G");
+
+  printtext(40, 36, 0x07, "Undo by");
+  printtext(48, 36, 0x0f, "Jason Page");
+  printtext(49, 36, 0x07, "ason Pag");
+  printtext(50, 36, 0x08, "son Pa");
+
+  // printtext(39, 36, 1, "1");
+  // printtext(40, 36, 2, "2");
+  // printtext(41, 36, 3, "3");
+  // printtext(42, 36, 4, "4");
+  // printtext(43, 36, 5, "5");
+  // printtext(44, 36, 6, "6");
+  // printtext(45, 36, 7, "7");
+  // printtext(46, 36, 8, "8");
+  // printtext(47, 36, 9, "9");
+  // printtext(48, 36, 10, "A");
+  // printtext(49, 36, 11, "B");
+  // printtext(50, 36, 12, "C");
+  // printtext(51, 36, 13, "D");
+  // printtext(52, 36, 14, "E");
+  // printtext(53, 36, 15, "F");
+
   fliptoscreen();
 }
 
@@ -54,41 +83,56 @@ void printstatus(void)
   if (!menu)
   {
     if (!strlen(loadedsongfilename))
-      sprintf(textbuffer, "%s", programname);
+      sprintf(textbuffer, "%s - %s", programname, patchname);
     else
       sprintf(textbuffer, "%s - %s", programname, loadedsongfilename);
     textbuffer[49] = 0;
     printtext(0, 0, 15+16, textbuffer);
 
-    if (editorInfo.usefinevib)
-      printtext(40+10, 0, 15+16, "FV");
+    int fg_active = 7;
+    int fg_inactive = 8;
+
+    printtext(40+10, 0, fg_inactive+16, "FV PO RO");
+
+    if (editorInfo.finevibrato)
+      printtext(40+10, 0, fg_active+16, "FV");
 
     if (editorInfo.optimizepulse)
-      printtext(43+10, 0, 15+16, "PO");
+      printtext(43+10, 0, fg_active+16, "PO");
 
     if (editorInfo.optimizerealtime)
-      printtext(46+10, 0, 15+16, "RO");
+      printtext(46+10, 0, fg_active+16, "RO");
 
     if (editorInfo.ntsc)
-      printtext(49+10, 0, 15+16, "NTSC");
+      printtext(49+10, 0, fg_active+16, "NTSC");
     else
-      printtext(49+10, 0, 15+16, " PAL");
+      printtext(49+10, 0, fg_active+16, " PAL");
 
     if (!editorInfo.sidmodel)
-      printtext(54+10, 0, 15+16, "6581");
+      printtext(54+10, 0, fg_active+16, "6581");
     else
-      printtext(54+10, 0, 15+16, "8580");
+      printtext(54+10, 0, fg_active+16, "8580");
 
     sprintf(textbuffer, "HR:%04X", editorInfo.adparam);
-    printtext(59+10, 0, 15+16, textbuffer);
+    printtext(59+10, 0, fg_active+16, textbuffer);
     if (eamode) printbg(62+10+ editorInfo.eacolumn, 0, cc, 1);
 
     if (editorInfo.multiplier)
     {
-      sprintf(textbuffer, "%2dX", editorInfo.multiplier);
-      printtext(67+10, 0, 15+16, textbuffer);
+      sprintf(textbuffer, "%2dx", editorInfo.multiplier);
+      printtext(67+10, 0, fg_active+16, textbuffer);
     }
-    else printtext(67+10, 0, 15+16, "25Hz");
+    else printtext(67+10, 0, fg_active+16, "25Hz");
+
+    printtext(72+10, 0, fg_inactive+16, "INT FP");
+
+    if (interpolate & 1) {
+      printtext(72+10, 0, fg_active+16, "INT");
+    }
+
+    if (interpolate & 2) {
+      printtext(76+10, 0, fg_active+16, "FP");
+    }
 
     printtext(72+20, 0, 15+16, "F12=HELP");
   }

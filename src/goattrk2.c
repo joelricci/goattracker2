@@ -60,7 +60,7 @@ unsigned mr = DEFAULTMIXRATE;
 unsigned writer = 0;
 unsigned hardsid = 0;
 unsigned catweasel = 0;
-unsigned interpolate = 0;
+unsigned interpolate = 3;
 unsigned residdelay = 0;
 unsigned hardsidbufinteractive = 20;
 unsigned hardsidbufplayback = 400;
@@ -81,7 +81,8 @@ char instrpath[MAX_PATHNAME];
 char packedpath[MAX_PATHNAME];
 
 extern char *notename[];
-char *programname = "$VER: GoatTracker v2.76";
+char *programname = PROGRAMNAME;
+char *patchname = PATCHNAME;
 char specialnotenames[186];
 char scalatuningfilepath[MAX_PATHNAME];
 char tuningname[64];
@@ -100,11 +101,11 @@ char* usage[] = {
 	"-Bxx Set sound buffer length in milliseconds DEFAULT=100",
 	"-Cxx Use CatWeasel MK3 PCI SID (0 = off, 1 = on)",
 	"-Dxx Pattern row display (0 = decimal, 1 = hex, 2 = decimal w/dots, 3 = hex w/dots)",
-	"-Exx Set emulated SID model (0 = 6581 1 = 8580) DEFAULT=6581",
+	"-Exx Set emulated SID model (0 = 6581 1 = 8580) DEFAULT=8580",
 	"-Fxx Set custom SID clock cycles per second (0 = use PAL/NTSC default)",
 	"-Gxx Set pitch of A-4 in Hz (0 = use default frequencytable, close to 440Hz)",
 	"-Hxx Use HardSID (0 = off, 1 = HardSID ID0 2 = HardSID ID1 etc.)",
-	"-Ixx Set reSID interpolation (0 = off, 1 = on, 2 = distortion, 3 = distortion & on) DEFAULT=off",
+	"-Ixx Set reSID interpolation (0 = off, 1 = on, 2 = distortion, 3 = distortion & on) DEFAULT=3",
 	"-Jxx Set special note names (2 chars for every note in an octave/cycle, e.g. C-DbD-EbE-F-GbG-AbA-BbB-)",
 	"-Kxx Note-entry mode (0 = Protracker, 1 = DMC, 2 = Janko) DEFAULT=Protracker",
 	"-Lxx SID memory location in hex. DEFAULT=D400",
@@ -135,6 +136,7 @@ int main(int argc, char **argv)
 	FILE *configfile;
 	int c, d;
 
+	// DEFAULT SETTINGS
 	editorInfo.adparam = 0x0f00;
 	editorInfo.editmode = EDIT_PATTERN;
 	editorInfo.esmarkchn = -1;
@@ -142,6 +144,12 @@ int main(int argc, char **argv)
 	editorInfo.epmarkchn = -1;
 	editorInfo.etmarknum = -1;
 	editorInfo.etlock = 1;
+	editorInfo.ntsc = 0;
+	editorInfo.multiplier = 1;
+	editorInfo.sidmodel = 1;
+	editorInfo.finevibrato = 1;
+	editorInfo.optimizepulse = 1;
+	editorInfo.optimizerealtime = 1;
 
 	programname += sizeof "$VER:";
 	// Open datafile
@@ -385,8 +393,13 @@ int main(int argc, char **argv)
 	if (!stepsize) stepsize = 4;
 	if (editorInfo.multiplier > 16) editorInfo.multiplier = 16;
 	if (keypreset > 2) keypreset = 0;
-	if ((editorInfo.finevibrato == 1) && (editorInfo.multiplier < 2)) editorInfo.usefinevib = 1;
-	if (editorInfo.finevibrato > 1) editorInfo.usefinevib = 1;
+
+	// removing 'usefinevib' since it's not actually being used and is
+	// not being saved. Code suggests FV not to be used for multi-speed. 
+	// Unfinished implementation?  /RaveGuru
+	// if ((editorInfo.finevibrato == 1) && (editorInfo.multiplier < 2)) editorInfo.usefinevib = 1;
+	
+	if (editorInfo.finevibrato > 0) editorInfo.finevibrato = 1;
 	if (editorInfo.optimizepulse > 1) editorInfo.optimizepulse = 1;
 	if (editorInfo.optimizerealtime > 1) editorInfo.optimizerealtime = 1;
 	if (residdelay > 63) residdelay = 63;
@@ -627,6 +640,18 @@ void converthex()
 	}
 }
 
+void do_sound_init() {
+	sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+}
+
+void toggle_interpolation_mode() {
+	interpolate++;
+	if (interpolate == 2)  // skip FP only mode
+		interpolate++;
+	interpolate &= 3;
+	stopsong();
+	do_sound_init();
+}
 
 void docommand(void)
 {
@@ -900,7 +925,7 @@ void mousecommands(void)
 			if ((mousex >= 40 + 10) && (mousex <= 41 + 10))
 			{
 				undoCreateEditorInfoBackup();
-				editorInfo.usefinevib ^= 1;
+				editorInfo.finevibrato ^= 1;
 				undoAddEditorSettingsToList();
 			}
 			if ((mousex >= 43 + 10) && (mousex <= 44 + 10))
@@ -920,14 +945,14 @@ void mousecommands(void)
 				undoCreateEditorInfoBackup();
 				editorInfo.ntsc ^= 1;
 				undoAddEditorSettingsToList();
-				sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+				do_sound_init();
 			}
 			if ((mousex >= 54 + 10) && (mousex <= 57 + 10))
 			{
 				undoCreateEditorInfoBackup();
 				editorInfo.sidmodel ^= 1;
 				undoAddEditorSettingsToList();
-				sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+				do_sound_init();
 			}
 			if ((mousex >= 62 + 10) && (mousex <= 65 + 10)) editadsr();
 			if ((mousex >= 67 + 10) && (mousex <= 68 + 10))
@@ -941,6 +966,22 @@ void mousecommands(void)
 				undoCreateEditorInfoBackup();
 				nextmultiplier();
 				undoAddEditorSettingsToList();
+			}
+			if ((mousex >= 72 + 10) && (mousex <= 74 + 10))
+			{
+				interpolate ^= 1;
+				interpolate &= 1 + (interpolate << 1);  // turn off FP if INT is 0
+				stopsong();
+				do_sound_init();
+				printf("%d\n", interpolate);
+			}
+			if ((mousex >= 76 + 10) && (mousex <= 77 + 10))
+			{
+				interpolate ^= 2;
+				interpolate |= interpolate >> 1;  // turn on INT if FP is 1
+				stopsong();
+				do_sound_init();
+				printf("%d\n", interpolate);
 			}
 		}
 	}
@@ -1162,12 +1203,18 @@ void generalcommands(void)
 		else
 		{
 			editorInfo.sidmodel ^= 1;
-			sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+			do_sound_init();
 		}
 		break;
 
 	case KEY_F9:
-		relocator();
+		if (!shiftpressed) {
+			relocator();
+		}
+		else
+		{
+			toggle_interpolation_mode();
+		}
 		break;
 
 	case KEY_F10:
@@ -1267,6 +1314,7 @@ void quit(void)
 {
 	if ((!shiftpressed) || (mouseb))
 	{
+		printblank(20, 35, 58);
 		printtextcp(49, 36, 15, "Really Quit (y/n)?");
 		waitkey();
 		printblank(20, 36, 58);
@@ -1284,6 +1332,7 @@ void clear(void)
 	int ct = 0;
 	int cn = 0;
 
+	printblank(20, 35, 58);
 	printtextcp(49, 36, 15, "Optimize everything (y/n)?");
 	waitkey();
 	printblank(20, 36, 58);
@@ -1536,7 +1585,7 @@ void prevmultiplier(void)
 	if (editorInfo.multiplier > 0)
 	{
 		editorInfo.multiplier--;
-		sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+		do_sound_init();
 	}
 }
 
@@ -1545,7 +1594,7 @@ void nextmultiplier(void)
 	if (editorInfo.multiplier < 16)
 	{
 		editorInfo.multiplier++;
-		sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+		do_sound_init();
 	}
 }
 
