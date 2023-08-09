@@ -2,15 +2,14 @@ To build under MacOS 11 (intel) and later:
 
 1. Install libsdl, for instance by using brew:
    (if you don't already have brew installed, consult the internet)
-    >brew install sdl
+    >brew install sdl12-compat
 
 2. Install Xcode command line developer tools:
     >xcode-select --install
 
-3. Clone or unarchive GoatTracker and cd to the 'src' folder:
-    goattracker2>cd src 
+3. Clone or unarchive GoatTracker 
 
-4. Build GT2 by running make:
+4. Build GT2 by going to the 'src' directory and running make:
     src>make 
 
 5. cd to the 'linux' folder and copy or run 'goattrk2':

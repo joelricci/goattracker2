@@ -14,6 +14,7 @@ Patches and further development by Stefan A. Haubenthal, Valerio Cannone, Raine 
 Tero Lindeman, Henrik Paulini and Groepaz.  
 Microtonal support by Birgit Jauernig.  
 Silver Fork fixes and additions by [Joel Ricci](https://github.com/joelricci)
+Undo system by Jason Page
 
 ---
 Distributed under GNU General Public License
@@ -33,7 +34,10 @@ This fork is based on the official above version of Goat Tracker. See [readme.tx
 
 Additional changes in this fork:
 
-- Macbook keyboard insert support using alt/option + backspace or fn + shift + backspace
+- Undo edits using CTRL/CMD+Z (Thanks to Jason Page)
+- Toggle ReSID interpolation and filter patch (distortion) mode by clicking INT/FP or press SHIFT+F9.
+- Fine vibrato (FV) setting is now saved to config.
+- Macbook keyboard insert support using ALT/OPTION+BACKSPACE or FN+SHIFT+BACKSPACE.
 - Deleting rows now works correctly on a Macbook keyboard
 - Delete using fn + backspace on a Macbook keyboard
 - Backspace works as expected when entering filenames
