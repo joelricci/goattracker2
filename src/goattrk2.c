@@ -944,14 +944,14 @@ void mousecommands(void)
 				undoCreateEditorInfoBackup();
 				editorInfo.ntsc ^= 1;
 				undoAddEditorSettingsToList();
-				sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+				do_sound_init();
 			}
 			if ((mousex >= 54 + 10) && (mousex <= 57 + 10))
 			{
 				undoCreateEditorInfoBackup();
 				editorInfo.sidmodel ^= 1;
 				undoAddEditorSettingsToList();
-				sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+				do_sound_init();
 			}
 			if ((mousex >= 62 + 10) && (mousex <= 65 + 10)) editadsr();
 			if ((mousex >= 67 + 10) && (mousex <= 68 + 10))
@@ -1200,7 +1200,7 @@ void generalcommands(void)
 		else
 		{
 			editorInfo.sidmodel ^= 1;
-			sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+			do_sound_init();
 		}
 		break;
 
@@ -1580,7 +1580,7 @@ void prevmultiplier(void)
 	if (editorInfo.multiplier > 0)
 	{
 		editorInfo.multiplier--;
-		sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+		do_sound_init();
 	}
 }
 
@@ -1589,7 +1589,7 @@ void nextmultiplier(void)
 	if (editorInfo.multiplier < 16)
 	{
 		editorInfo.multiplier++;
-		sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+		do_sound_init();
 	}
 }
 
