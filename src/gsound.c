@@ -70,7 +70,7 @@ int catweaselfd = -1;
 
 #endif
 
-int sound_init(unsigned b, unsigned mr, unsigned writer, unsigned hardsid, unsigned m, unsigned ntsc, unsigned multiplier, unsigned catweasel, unsigned interpolate, unsigned customclockrate)
+int sound_init(unsigned b, unsigned mr, unsigned writer, unsigned hardsid, unsigned model, unsigned ntsc, unsigned multiplier, unsigned catweasel, unsigned interpolate, unsigned customclockrate)
 {
   int c;
 
@@ -213,7 +213,7 @@ int sound_init(unsigned b, unsigned mr, unsigned writer, unsigned hardsid, unsig
     firsttimeinit = 0;
   }
   playspeed = snd_mixrate;
-  sid_init(playspeed, m, ntsc, interpolate & 1, customclockrate, interpolate >> 1);
+  sid_init(playspeed, model, ntsc, interpolate & 1, customclockrate, interpolate >> 1);
 
   snd_player = &sound_playrout;
   snd_setcustommixer(sound_mixer);
