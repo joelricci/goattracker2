@@ -54,7 +54,7 @@ unsigned finevibrato = 1;
 unsigned optimizepulse = 1;
 unsigned optimizerealtime = 1;
 unsigned customclockrate = 0;
-unsigned usefinevib = 0;
+// unsigned usefinevib = 0;
 unsigned b = DEFAULTBUF;
 unsigned mr = DEFAULTMIXRATE;
 unsigned writer = 0;
@@ -331,8 +331,8 @@ int main(int argc, char **argv)
   sidaddress &= 0xffff;
 
   if (multiplier > 16) multiplier = 16;
-  if ((finevibrato == 1) && (multiplier < 2)) usefinevib = 1;
-  if (finevibrato > 1) usefinevib = 1;
+  // if ((finevibrato == 1) && (multiplier < 2)) usefinevib = 1;
+  // if (finevibrato > 1) usefinevib = 1;
   if (optimizepulse > 1) optimizepulse = 1;
   if (optimizerealtime > 1) optimizerealtime = 1;
   if (customclockrate < 100) customclockrate = 0;

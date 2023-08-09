@@ -385,8 +385,13 @@ int main(int argc, char **argv)
 	if (!stepsize) stepsize = 4;
 	if (editorInfo.multiplier > 16) editorInfo.multiplier = 16;
 	if (keypreset > 2) keypreset = 0;
-	if ((editorInfo.finevibrato == 1) && (editorInfo.multiplier < 2)) editorInfo.usefinevib = 1;
-	if (editorInfo.finevibrato > 1) editorInfo.usefinevib = 1;
+
+	// removing 'usefinevib' since it's not actually being used and is
+	// not being saved. Code suggests FV not to be used for multi-speed. 
+	// Unfinished implementation?  /RaveGuru
+	// if ((editorInfo.finevibrato == 1) && (editorInfo.multiplier < 2)) editorInfo.usefinevib = 1;
+	
+	if (editorInfo.finevibrato > 1) editorInfo.finevibrato = 1;
 	if (editorInfo.optimizepulse > 1) editorInfo.optimizepulse = 1;
 	if (editorInfo.optimizerealtime > 1) editorInfo.optimizerealtime = 1;
 	if (residdelay > 63) residdelay = 63;
@@ -900,7 +905,7 @@ void mousecommands(void)
 			if ((mousex >= 40 + 10) && (mousex <= 41 + 10))
 			{
 				undoCreateEditorInfoBackup();
-				editorInfo.usefinevib ^= 1;
+				editorInfo.finevibrato ^= 1;
 				undoAddEditorSettingsToList();
 			}
 			if ((mousex >= 43 + 10) && (mousex <= 44 + 10))

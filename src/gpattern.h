@@ -27,7 +27,7 @@ typedef struct {
 	unsigned int optimizepulse;
 	unsigned int optimizerealtime;
 	unsigned int ntsc;
-	unsigned int usefinevib;
+	// unsigned int usefinevib;
 
 	int editmode;
 
