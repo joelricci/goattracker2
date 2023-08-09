@@ -639,6 +639,18 @@ void converthex()
 	}
 }
 
+void do_sound_init() {
+	sound_init(b, mr, writer, hardsid, editorInfo.sidmodel, editorInfo.ntsc, editorInfo.multiplier, catweasel, interpolate, customclockrate);
+}
+
+void toggle_interpolation_mode() {
+	interpolate++;
+	if (interpolate == 2)  // skip FP only mode
+		interpolate++;
+	interpolate &= 3;
+	stopsong();
+	do_sound_init();
+}
 
 void docommand(void)
 {
@@ -954,6 +966,20 @@ void mousecommands(void)
 				nextmultiplier();
 				undoAddEditorSettingsToList();
 			}
+			if ((mousex >= 72 + 10) && (mousex <= 74 + 10))
+			{
+				interpolate ^= 1;
+				interpolate &= 1 + (interpolate << 1);  // turn off FP if INT is 0
+				stopsong();
+				do_sound_init();
+		}
+			if ((mousex >= 76 + 10) && (mousex <= 77 + 10))
+			{
+				interpolate ^= 2;
+				interpolate |= interpolate >> 1;  // turn on INT if FP is 1
+				stopsong();
+				do_sound_init();
+			}
 		}
 	}
 	else
@@ -1179,7 +1205,13 @@ void generalcommands(void)
 		break;
 
 	case KEY_F9:
+		if (!shiftpressed) {
 		relocator();
+		}
+		else
+		{
+			toggle_interpolation_mode();
+		}
 		break;
 
 	case KEY_F10:

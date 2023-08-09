@@ -335,6 +335,7 @@ SHIFT+F5  Decrease speed multiplier
 SHIFT+F6  Increase speed multiplier
 SHIFT+F7  Edit hardrestart ADSR parameter
 SHIFT+F8  Switch between 6581 and 8580 SID models
+SHIFT+F9  Toggle ReSID interpolation and filter patch (distortion) mode
 SHIFT+F10 Merge-load song
 SHIFT+,.  Move song startposition on all channels and restart last playmode
 TAB       Cycle between editing modes (forwards)
