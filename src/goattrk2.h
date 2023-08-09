@@ -1,6 +1,9 @@
 #ifndef GOATTRK2_H
 #define GOATTRK2_H
 
+#define PROGRAMNAME "$VER: GoatTracker v2.76"
+#define PATCHNAME "Silver Fork v1.1"
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,6 +94,7 @@ extern char instrfilter[MAX_FILENAME];
 extern char instrpath[MAX_PATHNAME];
 extern char packedpath[MAX_PATHNAME];
 extern char *programname;
+extern char *patchname;
 extern char *notename[];
 extern char textbuffer[MAX_PATHNAME];
 extern unsigned char hexkeytbl[16];

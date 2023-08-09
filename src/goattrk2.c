@@ -81,7 +81,8 @@ char instrpath[MAX_PATHNAME];
 char packedpath[MAX_PATHNAME];
 
 extern char *notename[];
-char *programname = "$VER: GoatTracker v2.76";
+char *programname = PROGRAMNAME;
+char *patchname = PATCHNAME;
 char specialnotenames[186];
 char scalatuningfilepath[MAX_PATHNAME];
 char tuningname[64];
@@ -1311,6 +1312,7 @@ void quit(void)
 {
 	if ((!shiftpressed) || (mouseb))
 	{
+		printblank(20, 35, 58);
 		printtextcp(49, 36, 15, "Really Quit (y/n)?");
 		waitkey();
 		printblank(20, 36, 58);
@@ -1328,6 +1330,7 @@ void clear(void)
 	int ct = 0;
 	int cn = 0;
 
+	printblank(20, 35, 58);
 	printtextcp(49, 36, 15, "Optimize everything (y/n)?");
 	waitkey();
 	printblank(20, 36, 58);
