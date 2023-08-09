@@ -60,7 +60,7 @@ unsigned mr = DEFAULTMIXRATE;
 unsigned writer = 0;
 unsigned hardsid = 0;
 unsigned catweasel = 0;
-unsigned interpolate = 0;
+unsigned interpolate = 3;
 unsigned residdelay = 0;
 unsigned hardsidbufinteractive = 20;
 unsigned hardsidbufplayback = 400;
@@ -100,11 +100,11 @@ char* usage[] = {
 	"-Bxx Set sound buffer length in milliseconds DEFAULT=100",
 	"-Cxx Use CatWeasel MK3 PCI SID (0 = off, 1 = on)",
 	"-Dxx Pattern row display (0 = decimal, 1 = hex, 2 = decimal w/dots, 3 = hex w/dots)",
-	"-Exx Set emulated SID model (0 = 6581 1 = 8580) DEFAULT=6581",
+	"-Exx Set emulated SID model (0 = 6581 1 = 8580) DEFAULT=8580",
 	"-Fxx Set custom SID clock cycles per second (0 = use PAL/NTSC default)",
 	"-Gxx Set pitch of A-4 in Hz (0 = use default frequencytable, close to 440Hz)",
 	"-Hxx Use HardSID (0 = off, 1 = HardSID ID0 2 = HardSID ID1 etc.)",
-	"-Ixx Set reSID interpolation (0 = off, 1 = on, 2 = distortion, 3 = distortion & on) DEFAULT=off",
+	"-Ixx Set reSID interpolation (0 = off, 1 = on, 2 = distortion, 3 = distortion & on) DEFAULT=3",
 	"-Jxx Set special note names (2 chars for every note in an octave/cycle, e.g. C-DbD-EbE-F-GbG-AbA-BbB-)",
 	"-Kxx Note-entry mode (0 = Protracker, 1 = DMC, 2 = Janko) DEFAULT=Protracker",
 	"-Lxx SID memory location in hex. DEFAULT=D400",
@@ -135,6 +135,7 @@ int main(int argc, char **argv)
 	FILE *configfile;
 	int c, d;
 
+	// DEFAULT SETTINGS
 	editorInfo.adparam = 0x0f00;
 	editorInfo.editmode = EDIT_PATTERN;
 	editorInfo.esmarkchn = -1;
@@ -142,6 +143,12 @@ int main(int argc, char **argv)
 	editorInfo.epmarkchn = -1;
 	editorInfo.etmarknum = -1;
 	editorInfo.etlock = 1;
+	editorInfo.ntsc = 0;
+	editorInfo.multiplier = 1;
+	editorInfo.sidmodel = 1;
+	editorInfo.finevibrato = 1;
+	editorInfo.optimizepulse = 1;
+	editorInfo.optimizerealtime = 1;
 
 	programname += sizeof "$VER:";
 	// Open datafile
