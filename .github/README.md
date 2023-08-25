@@ -13,8 +13,8 @@ Command quick reference by Simon Bennett.
 Patches and further development by Stefan A. Haubenthal, Valerio Cannone, Raine M. Ekman,
 Tero Lindeman, Henrik Paulini and Groepaz.  
 Microtonal support by Birgit Jauernig.  
-Silver Fork fixes and additions by [Joel Ricci](https://github.com/joelricci)
-Undo system by Jason Page
+Silver Fork fixes and additions by [Joel Ricci](https://github.com/joelricci).<br>
+Undo system by Jason Page.
 
 ---
 Distributed under GNU General Public License
