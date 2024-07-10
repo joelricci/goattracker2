@@ -28,6 +28,10 @@ http://sourceforge.net/projects/goattracker2
 
 <br>
 
+-- See **build instructions for  [MAC](../build_instructions_macos.txt)** ! --
+
+<br>
+
 ## Revision history
 
 This fork is based on the official above version of Goat Tracker. See [readme.txt](../readme.txt) for full history.
