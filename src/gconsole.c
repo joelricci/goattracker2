@@ -663,7 +663,7 @@ void getkey(void)
 
   if ((rawkey == SDLK_BACKSPACE && altpressed) ||
       (rawkey == SDLK_DELETE && shiftpressed))
-    // macbook keyboard insert using alt+backspace or fn+shift+backspace
+    // macbook keyboard insert using alt/option+backspace or fn+shift+backspace
     rawkey = SDLK_INSERT;
 
   if (rawkey == SDLK_DELETE && key == SDLK_LEFTPAREN)

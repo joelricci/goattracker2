@@ -21,7 +21,7 @@ void onlinehelp(int standalone,int context)
 {
   char *mackeys[] = {
     "FN+SHIFT+BACKSPACE  Insert",
-    "ALT+BACKSPACE       Insert",
+    "OPTION+BACKSPACE    Insert",
     "FN+BACKSPACE        Delete",
     "CMD+Z, CTRL+Z       Undo",
     NULL
