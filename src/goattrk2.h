@@ -1,6 +1,9 @@
 #ifndef GOATTRK2_H
 #define GOATTRK2_H
 
+#define PROGRAMNAME "$VER: GoatTracker v2.76"
+#define PATCHNAME "Silver Fork v1.1"
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +18,7 @@
 #include "gconsole.h"
 #include "gsound.h"
 #include "gsid.h"
+#include "gundo.h"
 #include "gsong.h"
 #include "gplay.h"
 #include "gdisplay.h"
@@ -44,7 +48,7 @@
 
 #ifndef GOATTRK2_C
 extern int menu;
-extern int editmode;
+//extern int editorInfo.editmode;
 extern int recordmode;
 extern int followplay;
 extern int hexnybble;
@@ -54,23 +58,23 @@ extern int defaultpatternlength;
 extern int cursorflash;
 extern int cursorcolortable[];
 extern int exitprogram;
-extern int eacolumn;
+//extern int eacolumn;
 extern int eamode;
 extern unsigned keypreset;
 extern unsigned playerversion;
 extern int fileformat;
 extern int zeropageadr;
 extern int playeradr;
-extern unsigned sidmodel;
-extern unsigned multiplier;
-extern unsigned adparam;
-extern unsigned ntsc;
+//extern unsigned sidmodel;
+//extern unsigned multiplier;
+//extern unsigned adparam;
+//extern unsigned ntsc;
 extern unsigned patterndispmode;
 extern unsigned sidaddress;
-extern unsigned finevibrato;
-extern unsigned optimizepulse;
-extern unsigned optimizerealtime;
-extern unsigned usefinevib;
+//extern unsigned finevibrato;
+//extern unsigned optimizepulse;
+//extern unsigned optimizerealtime;
+//extern unsigned usefinevib;
 extern unsigned b;
 extern unsigned mr;
 extern unsigned writer;
@@ -90,6 +94,7 @@ extern char instrfilter[MAX_FILENAME];
 extern char instrpath[MAX_PATHNAME];
 extern char packedpath[MAX_PATHNAME];
 extern char *programname;
+extern char *patchname;
 extern char *notename[];
 extern char textbuffer[MAX_PATHNAME];
 extern unsigned char hexkeytbl[16];

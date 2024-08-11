@@ -70,7 +70,7 @@ int catweaselfd = -1;
 
 #endif
 
-int sound_init(unsigned b, unsigned mr, unsigned writer, unsigned hardsid, unsigned m, unsigned ntsc, unsigned multiplier, unsigned catweasel, unsigned interpolate, unsigned customclockrate)
+int sound_init(unsigned b, unsigned mr, unsigned writer, unsigned hardsid, unsigned model, unsigned ntsc, unsigned multiplier, unsigned catweasel, unsigned interpolate, unsigned customclockrate)
 {
   int c;
 
@@ -213,7 +213,7 @@ int sound_init(unsigned b, unsigned mr, unsigned writer, unsigned hardsid, unsig
     firsttimeinit = 0;
   }
   playspeed = snd_mixrate;
-  sid_init(playspeed, m, ntsc, interpolate & 1, customclockrate, interpolate >> 1);
+  sid_init(playspeed, model, ntsc, interpolate & 1, customclockrate, interpolate >> 1);
 
   snd_player = &sound_playrout;
   snd_setcustommixer(sound_mixer);
@@ -388,7 +388,7 @@ int sound_thread(void *userdata)
 
     for (c = 0; c < NUMSIDREGS; c++)
     {
-      unsigned o = sid_getorder(c);
+      unsigned o = sid_getorder(c,editorInfo.adparam);
 
       HardSID_Write(usehardsid-1, SIDWRITEDELAY, o, sidreg[o]);
       cycles -= SIDWRITEDELAY;
@@ -435,7 +435,7 @@ void sound_playrout(void)
     #ifdef __WIN32__
     for (c = 0; c < NUMSIDREGS; c++)
     {
-      unsigned o = sid_getorder(c);
+      unsigned o = sid_getorder(c, editorInfo.adparam);
         if (cycleexacthardsid) {
             HardSID_Write(usehardsid-1, SIDWRITEDELAY, o, sidreg[o]);
         }
@@ -446,7 +446,7 @@ void sound_playrout(void)
     #else
     for (c = 0; c < NUMSIDREGS; c++)
     {
-      unsigned o = sid_getorder(c);
+      unsigned o = sid_getorder(c, editorInfo.adparam);
       Uint32 dataword = (o << 8) | sidreg[o];
       write(hardsidfd, &dataword, 4);
     }
@@ -460,7 +460,7 @@ void sound_playrout(void)
 
     for(w = 0; w < NUMSIDREGS; w++)
     {
-      unsigned o = sid_getorder(w);
+      unsigned o = sid_getorder(w, editorInfo.adparam);
 
       buf[w*2] = o;
       buf[w*2+1] = sidreg[o];
@@ -469,7 +469,7 @@ void sound_playrout(void)
     #else
     for (c = 0; c < NUMSIDREGS; c++)
     {
-      unsigned o = sid_getorder(c);
+      unsigned o = sid_getorder(c, editorInfo.adparam);
 
       lseek(catweaselfd, o, SEEK_SET);
       write(catweaselfd, &sidreg[o], 1);
@@ -486,7 +486,7 @@ void sound_mixer(Sint32 *dest, unsigned samples)
   if (samples > MIXBUFFERSIZE) return;
   if (!buffer) return;
 
-  sid_fillbuffer(buffer, samples);
+  sid_fillbuffer(buffer, samples,editorInfo.adparam);
   if (writehandle)
     fwrite(buffer, samples * sizeof(Uint16), 1, writehandle);
 

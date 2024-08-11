@@ -1,25 +1,30 @@
-To build under MacOS 11 (intel) and later:
+To build under MacOS (Intel or Apple Silicon):
 
-1. Install libsdl, for instance by using brew:
-   (if you don't already have brew installed, consult the internet)
-    >brew install sdl
+1. Install libsdl by using Homebrew:
+   (if you don't already have Homebrew installed, consult the internet)
+    > brew install sdl12-compat
 
 2. Install Xcode command line developer tools:
-    >xcode-select --install
+    > xcode-select --install
 
-3. Clone or unarchive GoatTracker and cd to the 'src' folder:
-    goattracker2>cd src 
+3. Clone or unarchive GoatTracker to a folder near you. Open the path in the Terminal app.
 
-4. Build GT2 by running make:
-    src>make 
+4. Build GT2 by going to the 'src' directory and running make:
+    goattracker2> cd src
+    src> make 
 
-5. cd to the 'linux' folder and copy or run 'goattrk2':
-    src>cd ..
-    goattracker2>cd linux
-    linux>./goattrk2
+5. Go to the 'linux' folder and run 'goattrk2':
+    src> cd ../linux
+    linux> ./goattrk2
 
-    ..or copy to your desktop:
+    --- or copy to your desktop:
 
-    src>cp ../linux/goattrk2 $HOME/Desktop 
+    src> cp ../linux/goattrk2 $HOME/Desktop 
+
+
+6. Remember to hold the FN-key when accessing F1 to F12 keys on Mac. 
+Alternatively go to System Settings, search for "function keys" and change 
+the default setting. You may also want to disable some shortcuts, like Exposition, 
+depending on your keyboard and OS version.
 
 Enjoy!

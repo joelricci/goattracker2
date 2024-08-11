@@ -36,7 +36,7 @@ int defaultpatternlength = 64;
 int cursorflash = 0;
 int cursorcolortable[] = {1,2,7,2};
 int exitprogram = 0;
-int eacolumn = 0;
+//int eacolumn = 0;
 int eamode = 0;
 
 unsigned keypreset = KEY_TRACKER;
@@ -44,7 +44,7 @@ unsigned playerversion = 0;
 int fileformat = FORMAT_PRG;
 int zeropageadr = 0xfc;
 int playeradr = 0x1000;
-unsigned sidmodel = 0;
+unsigned sidmodel = 1;
 unsigned multiplier = 1;
 unsigned adparam = 0x0f00;
 unsigned ntsc = 0;
@@ -54,7 +54,7 @@ unsigned finevibrato = 1;
 unsigned optimizepulse = 1;
 unsigned optimizerealtime = 1;
 unsigned customclockrate = 0;
-unsigned usefinevib = 0;
+// unsigned usefinevib = 0;
 unsigned b = DEFAULTBUF;
 unsigned mr = DEFAULTMIXRATE;
 unsigned writer = 0;
@@ -77,7 +77,8 @@ char instrpath[MAX_PATHNAME];
 char packedpath[MAX_PATHNAME];
 char packedsongname[MAX_PATHNAME];
 
-char *programname = "$VER: GoatTracker v2.73";
+char *programname = PROGRAMNAME;
+char *patchname = PATCHNAME;
 
 char textbuffer[MAX_PATHNAME];
 
@@ -331,8 +332,8 @@ int main(int argc, char **argv)
   sidaddress &= 0xffff;
 
   if (multiplier > 16) multiplier = 16;
-  if ((finevibrato == 1) && (multiplier < 2)) usefinevib = 1;
-  if (finevibrato > 1) usefinevib = 1;
+  // if ((finevibrato == 1) && (multiplier < 2)) usefinevib = 1;
+  // if (finevibrato > 1) usefinevib = 1;
   if (optimizepulse > 1) optimizepulse = 1;
   if (optimizerealtime > 1) optimizerealtime = 1;
   if (customclockrate < 100) customclockrate = 0;

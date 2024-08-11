@@ -8,14 +8,14 @@
 #define MST_RAW 4
 
 #ifndef GTABLE_C
-extern int etview[MAX_TABLES];
-extern int etnum;
-extern int etpos;
-extern int etcolumn;
-extern int etlock;
-extern int etmarknum;
-extern int etmarkstart;
-extern int etmarkend;
+//extern int etview[MAX_TABLES];
+//extern int etnum;
+//extern int editorInfo.etpos;
+//extern int editorInfo.etcolumn;
+//extern int editorInfo.etlock;
+//extern int editorInfo.etmarknum;
+//extern int editorInfo.etmarkstart;
+//extern int editorInfo.etmarkend;
 #endif
 
 void tablecommands(void);

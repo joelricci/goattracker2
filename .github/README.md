@@ -13,7 +13,8 @@ Command quick reference by Simon Bennett.
 Patches and further development by Stefan A. Haubenthal, Valerio Cannone, Raine M. Ekman,
 Tero Lindeman, Henrik Paulini and Groepaz.  
 Microtonal support by Birgit Jauernig.  
-Silver Fork fixes and additions by [Joel Ricci](https://github.com/joelricci)
+Silver Fork fixes and additions by [Joel Ricci](https://github.com/joelricci).<br>
+Undo system by Jason Page.
 
 ---
 Distributed under GNU General Public License
@@ -27,16 +28,24 @@ http://sourceforge.net/projects/goattracker2
 
 <br>
 
+-->> See **build instructions for  [MAC](../build_instructions_macos.txt)** ! <<--
+
+<br>
+
 ## Revision history
 
 This fork is based on the official above version of Goat Tracker. See [readme.txt](../readme.txt) for full history.
 
 Additional changes in this fork:
 
-- Macbook keyboard insert support using alt/option + backspace or fn + shift + backspace
+- Builds on Intel and ARM Macs
+- Undo edits using CTRL/CMD+Z (Thanks to Jason Page)
+- Toggle ReSID interpolation and filter patch (distortion) mode by clicking INT/FP or press SHIFT+F9.
+- Fine vibrato (FV) setting is now saved to config.
+- Macbook keyboard insert support using ALT/OPTION+BACKSPACE or FN+SHIFT+BACKSPACE.
 - Deleting rows now works correctly on a Macbook keyboard
 - Delete using fn + backspace on a Macbook keyboard
 - Backspace works as expected when entering filenames
 - Better support for some USB keyboards (unwanted characters)
 - Build instructions for MacOS (see separate [txt file](../build_instructions_macos.txt))
-- Builds on Intel macOS 11 and later
+

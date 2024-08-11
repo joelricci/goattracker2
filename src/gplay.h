@@ -10,6 +10,19 @@
 
 typedef struct
 {
+	int espos;
+	int esend;
+	int epnum;
+}CHN_EDITOR_INFO;
+
+typedef struct
+{
+	CHN_EDITOR_INFO editorInfo[MAX_CHN];
+}EDITOR_UNDO_INFO;
+
+
+typedef struct
+{
   unsigned char trans;
   unsigned char instr;
   unsigned char note;
@@ -40,6 +53,7 @@ typedef struct
 } CHN;
 
 #ifndef GPLAY_C
+extern EDITOR_UNDO_INFO editorUndoInfo;
 extern CHN chn[MAX_CHN];
 extern unsigned char masterfader;
 extern unsigned char freqtbllo[];

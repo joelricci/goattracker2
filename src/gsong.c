@@ -146,21 +146,21 @@ int saveinstrument(void)
     fwrite(ident, 4, 1, handle);
 
     // Write instrument
-    fwrite8(handle, instr[einum].ad);
-    fwrite8(handle, instr[einum].sr);
-    fwrite8(handle, instr[einum].ptr[WTBL]);
-    fwrite8(handle, instr[einum].ptr[PTBL]);
-    fwrite8(handle, instr[einum].ptr[FTBL]);
-    fwrite8(handle, instr[einum].ptr[STBL]);
-    fwrite8(handle, instr[einum].vibdelay);
-    fwrite8(handle, instr[einum].gatetimer);
-    fwrite8(handle, instr[einum].firstwave);
-    fwrite(&instr[einum].name, MAX_INSTRNAMELEN, 1, handle);
+    fwrite8(handle, instr[editorInfo.einum].ad);
+    fwrite8(handle, instr[editorInfo.einum].sr);
+    fwrite8(handle, instr[editorInfo.einum].ptr[WTBL]);
+    fwrite8(handle, instr[editorInfo.einum].ptr[PTBL]);
+    fwrite8(handle, instr[editorInfo.einum].ptr[FTBL]);
+    fwrite8(handle, instr[editorInfo.einum].ptr[STBL]);
+    fwrite8(handle, instr[editorInfo.einum].vibdelay);
+    fwrite8(handle, instr[editorInfo.einum].gatetimer);
+    fwrite8(handle, instr[editorInfo.einum].firstwave);
+    fwrite(&instr[editorInfo.einum].name, MAX_INSTRNAMELEN, 1, handle);
     for (c = 0; c < MAX_TABLES; c++)
     {
-      if (instr[einum].ptr[c])
+      if (instr[editorInfo.einum].ptr[c])
       {
-        int pos = instr[einum].ptr[c] - 1;
+        int pos = instr[editorInfo.einum].ptr[c] - 1;
         int len = gettablepartlen(c, pos);
         fwrite8(handle, len);
         fwrite(&ltable[c][pos], len, 1, handle);
@@ -282,7 +282,7 @@ void loadsong(void)
         instr[c].ptr[PTBL] = fread8(handle);
         instr[c].ptr[FTBL] = fread8(handle);
         instr[c].vibdelay = fread8(handle);
-        instr[c].ptr[STBL] = makespeedtable(fread8(handle), finevibrato, 0) + 1;
+        instr[c].ptr[STBL] = makespeedtable(fread8(handle), editorInfo.finevibrato, 0) + 1;
         instr[c].gatetimer = fread8(handle);
         instr[c].firstwave = fread8(handle);
         fread(&instr[c].name, MAX_INSTRNAMELEN, 1, handle);
@@ -318,7 +318,7 @@ void loadsong(void)
             break;
 
             case CMD_VIBRATO:
-            pattern[c][d*4+3] = makespeedtable(pattern[c][d*4+3], finevibrato, 0) + 1;
+            pattern[c][d*4+3] = makespeedtable(pattern[c][d*4+3], editorInfo.finevibrato, 0) + 1;
             break;
           }
         }
@@ -863,19 +863,19 @@ void loadinstrument(void)
     {
       unsigned char optr[4];
 
-      instr[einum].ad = fread8(handle);
-      instr[einum].sr = fread8(handle);
+      instr[editorInfo.einum].ad = fread8(handle);
+      instr[editorInfo.einum].sr = fread8(handle);
       optr[0] = fread8(handle);
       optr[1] = fread8(handle);
       optr[2] = fread8(handle);
       optr[3] = fread8(handle);
-      instr[einum].vibdelay = fread8(handle);
-      instr[einum].gatetimer = fread8(handle);
-      instr[einum].firstwave = fread8(handle);
-      fread(&instr[einum].name, MAX_INSTRNAMELEN, 1, handle);
+      instr[editorInfo.einum].vibdelay = fread8(handle);
+      instr[editorInfo.einum].gatetimer = fread8(handle);
+      instr[editorInfo.einum].firstwave = fread8(handle);
+      fread(&instr[editorInfo.einum].name, MAX_INSTRNAMELEN, 1, handle);
 
       // Erase old tabledata
-      deleteinstrtable(einum);
+      deleteinstrtable(editorInfo.einum);
 
       // Load new tabledata
       for (c = 0; c < MAX_TABLES; c++)
@@ -915,9 +915,9 @@ void loadinstrument(void)
             pulsestart = start;
             pulseend = start + len;
           }
-          instr[einum].ptr[c] = start + 1;
+          instr[editorInfo.einum].ptr[c] = start + 1;
         }
-        else instr[einum].ptr[c] = 0;
+        else instr[editorInfo.einum].ptr[c] = 0;
       }
     }
 
@@ -926,19 +926,19 @@ void loadinstrument(void)
     {
       unsigned char optr[3];
 
-      instr[einum].ad = fread8(handle);
-      instr[einum].sr = fread8(handle);
+      instr[editorInfo.einum].ad = fread8(handle);
+      instr[editorInfo.einum].sr = fread8(handle);
       optr[0] = fread8(handle);
       optr[1] = fread8(handle);
       optr[2] = fread8(handle);
-      instr[einum].vibdelay = fread8(handle);
-      instr[einum].ptr[STBL] = makespeedtable(fread8(handle), finevibrato, 0) + 1;
-      instr[einum].gatetimer = fread8(handle);
-      instr[einum].firstwave = fread8(handle);
-      fread(&instr[einum].name, MAX_INSTRNAMELEN, 1, handle);
+      instr[editorInfo.einum].vibdelay = fread8(handle);
+      instr[editorInfo.einum].ptr[STBL] = makespeedtable(fread8(handle), editorInfo.finevibrato, 0) + 1;
+      instr[editorInfo.einum].gatetimer = fread8(handle);
+      instr[editorInfo.einum].firstwave = fread8(handle);
+      fread(&instr[editorInfo.einum].name, MAX_INSTRNAMELEN, 1, handle);
 
       // Erase old tabledata
-      deleteinstrtable(einum);
+      deleteinstrtable(editorInfo.einum);
 
       // Load new tabledata
       for (c = 0; c < MAX_TABLES-1; c++)
@@ -975,9 +975,9 @@ void loadinstrument(void)
             pulsestart = start;
             pulseend = start + len;
           }
-          instr[einum].ptr[c] = start + 1;
+          instr[editorInfo.einum].ptr[c] = start + 1;
         }
-        else instr[einum].ptr[c] = 0;
+        else instr[editorInfo.einum].ptr[c] = 0;
       }
     }
     // Goattracker 1.xx import
@@ -989,28 +989,28 @@ void loadinstrument(void)
       int fw, fp, ff;
 
       // Erase old tabledata
-      deleteinstrtable(einum);
+      deleteinstrtable(editorInfo.einum);
 
       fw = gettablelen(WTBL);
       fp = gettablelen(PTBL);
       ff = gettablelen(FTBL);
 
-      instr[einum].ad = fread8(handle);
-      instr[einum].sr = fread8(handle);
-      if (multiplier)
-        instr[einum].gatetimer = 2 * multiplier;
+      instr[editorInfo.einum].ad = fread8(handle);
+      instr[editorInfo.einum].sr = fread8(handle);
+      if (editorInfo.multiplier)
+        instr[editorInfo.einum].gatetimer = 2 * editorInfo.multiplier;
       else
-        instr[einum].gatetimer = 1;
-      instr[einum].firstwave = 0x9;
+        instr[editorInfo.einum].gatetimer = 1;
+      instr[editorInfo.einum].firstwave = 0x9;
       pulse = fread8(handle);
       pulseadd = fread8(handle);
       pulselimitlow = fread8(handle);
       pulselimithigh = fread8(handle);
-      instr[einum].ptr[FTBL] = fread8(handle) ? ff+1 : 0;
-      if (pulse & 1) instr[einum].gatetimer |= 0x80; // "No hardrestart" flag
+      instr[editorInfo.einum].ptr[FTBL] = fread8(handle) ? ff+1 : 0;
+      if (pulse & 1) instr[editorInfo.einum].gatetimer |= 0x80; // "No hardrestart" flag
         wavelen = fread8(handle)/2;
-      fread(&instr[einum].name, MAX_INSTRNAMELEN, 1, handle);
-      instr[einum].ptr[WTBL] = fw+1;
+      fread(&instr[editorInfo.einum].name, MAX_INSTRNAMELEN, 1, handle);
+      instr[editorInfo.einum].ptr[WTBL] = fw+1;
 
       // Convert wavetable
       for (d = 0; d < wavelen; d++)
@@ -1020,7 +1020,7 @@ void loadinstrument(void)
           ltable[WTBL][fw] = fread8(handle);
           rtable[WTBL][fw] = fread8(handle);
           if (ltable[WTBL][fw] == 0xff)
-            if (rtable[WTBL][fw]) rtable[WTBL][fw] += instr[einum].ptr[WTBL]-1;
+            if (rtable[WTBL][fw]) rtable[WTBL][fw] += instr[editorInfo.einum].ptr[WTBL]-1;
           fw++;
         }
         else
@@ -1033,7 +1033,7 @@ void loadinstrument(void)
       // Remove empty wavetable afterwards
       if ((wavelen == 2) && (!ltable[WTBL][fw-2]) && (!rtable[WTBL][fw-2]))
       {
-        instr[einum].ptr[WTBL] = 0;
+        instr[editorInfo.einum].ptr[WTBL] = 0;
         fw -= 2;
         ltable[WTBL][fw] = 0;
         rtable[WTBL][fw] = 0;
@@ -1050,7 +1050,7 @@ void loadinstrument(void)
         // Initial pulse setting
         if (fp >= MAX_TABLELEN) goto PULSEDONE;
         pulsestart = fp;
-        instr[einum].ptr[PTBL] = fp+1;
+        instr[editorInfo.einum].ptr[PTBL] = fp+1;
         ltable[PTBL][fp] = 0x80 | (pulse >> 4);
         rtable[PTBL][fp] = pulse << 4;
         fp++;
@@ -1118,7 +1118,7 @@ void loadinstrument(void)
             // Pulse jump back to beginning
             if (fp >= MAX_TABLELEN) goto PULSEDONE;
             ltable[PTBL][fp] = 0xff;
-            rtable[PTBL][fp] = instr[einum].ptr[PTBL] + 1;
+            rtable[PTBL][fp] = instr[editorInfo.einum].ptr[PTBL] + 1;
             fp++;
           }
           else
@@ -1158,7 +1158,7 @@ void loadinstrument(void)
       }
 
       // Convert filter (if any)
-      if ((instr[einum].ptr[FTBL]) && (ff < MAX_TABLELEN-2))
+      if ((instr[editorInfo.einum].ptr[FTBL]) && (ff < MAX_TABLELEN-2))
       {
         fread(filtertemp, sizeof filtertemp, 1, handle);
         // Filter set
@@ -1217,12 +1217,12 @@ void loadinstrument(void)
     // Convert old legato/nohr parameters
     if (ident[3] < '5')
     {
-      if (instr[einum].firstwave >= 0x80)
+      if (instr[editorInfo.einum].firstwave >= 0x80)
       {
-        instr[einum].firstwave &= 0x7f;
-        instr[einum].gatetimer |= 0x80;
+        instr[editorInfo.einum].firstwave &= 0x7f;
+        instr[editorInfo.einum].gatetimer |= 0x80;
       }
-      if (!instr[einum].firstwave) instr[einum].gatetimer |= 0x40;
+      if (!instr[editorInfo.einum].firstwave) instr[editorInfo.einum].gatetimer |= 0x40;
     }
   }
 }
@@ -1236,17 +1236,17 @@ void clearsong(int cs, int cp, int ci, int ct, int cn)
   stopsong();
 
   masterfader = 0x0f;
-  epmarkchn = -1;
-  etmarknum = -1;
-  esmarkchn = -1;
+  editorInfo.epmarkchn = -1;
+  editorInfo.etmarknum = -1;
+  editorInfo.esmarkchn = -1;
   followplay = 0;
 
   for (c = 0; c < MAX_CHN; c++)
   {
     int d;
     chn[c].mute = 0;
-    if (multiplier)
-      chn[c].tempo = multiplier*6-1;
+    if (editorInfo.multiplier)
+      chn[c].tempo = editorInfo.multiplier*6-1;
     else
       chn[c].tempo = 6-1;
     chn[c].pattptr = 0;
@@ -1266,29 +1266,29 @@ void clearsong(int cs, int cp, int ci, int ct, int cn)
           songorder[d][c][0] = LOOPSONG;
         }
       }
-      epnum[c] = songorder[0][c][0];
-      espos[c] = 0;
-      esend[c] = 0;
+	  editorUndoInfo.editorInfo[c].epnum = songorder[0][c][0];
+	  editorUndoInfo.editorInfo[c].espos = 0;
+	  editorUndoInfo.editorInfo[c].esend = 0;
     }
   }
   if (cs)
   {
-    esview = 0;
-    eseditpos = 0;
-    escolumn = 0;
-    eschn = 0;
-    esnum = 0;
-    eppos = 0;
-    epview =-VISIBLEPATTROWS/2;
-    epcolumn = 0;
-    epchn = 0;
+    editorInfo.esview = 0;
+    editorInfo.eseditpos = 0;
+    editorInfo.escolumn = 0;
+    editorInfo.eschn = 0;
+    editorInfo.esnum = 0;
+    editorInfo.eppos = 0;
+    editorInfo.epview =-VISIBLEPATTROWS/2;
+    editorInfo.epcolumn = 0;
+    editorInfo.epchn = 0;
   }
   if (cn)
   {
     memset(songname, 0, sizeof songname);
     memset(authorname, 0, sizeof authorname);
     memset(copyrightname, 0, sizeof copyrightname);
-    enpos = 0;
+    editorInfo.enpos = 0;
   }
   if (cp)
   {
@@ -1301,9 +1301,9 @@ void clearsong(int cs, int cp, int ci, int ct, int cn)
     for (c = 0; c < MAX_INSTR; c++)
       clearinstr(c);
     memset(&instrcopybuffer, 0, sizeof(INSTR));
-    eipos = 0;
-    eicolumn = 0;
-    einum = 1;
+    editorInfo.eipos = 0;
+    editorInfo.eicolumn = 0;
+    editorInfo.einum = 1;
   }
   if (ct == 1)
   {
@@ -1315,6 +1315,9 @@ void clearsong(int cs, int cp, int ci, int ct, int cn)
     }
   }
   countpatternlengths();
+
+  if (cs)
+	  undoInitAllAreas();
 }
 
 void countpatternlengths(void)
@@ -1354,15 +1357,15 @@ void countthispattern(void)
 {
   int c, d, e;
 
-  c = epnum[epchn];
+  c = editorUndoInfo.editorInfo[editorInfo.epchn].epnum;
   for (d = 0; d <= MAX_PATTROWS; d++)
   {
     if (pattern[c][d*4] == ENDPATT) break;
   }
   pattlen[c] = d;
 
-  e = esnum;
-  c = eschn;
+  e = editorInfo.esnum;
+  c = editorInfo.eschn;
   for (d = 0; d < MAX_SONGLEN; d++)
   {
     if (songorder[e][c][d] >= LOOPSONG) break;
@@ -1379,6 +1382,13 @@ int insertpattern(int p)
   findusedpatterns();
   if (p >= MAX_PATT-2) return 0;
   if (pattused[MAX_PATT-1]) return 0;
+
+  // Mark all patterns from this point onwards for undo.
+  for (int i = p + 1;i < MAX_PATT - p - 2;i++)
+  {
+	  undoAreaSetCheckForChange(UNDO_AREA_PATTERN, i, UNDO_AREA_DIRTY_CHECK);
+  }
+
   memmove(pattern[p+2], pattern[p+1], (MAX_PATT-p-2)*(MAX_PATTROWS*4+4));  
   countpatternlengths();
 
@@ -1401,7 +1411,7 @@ int insertpattern(int p)
   
   for (c = 0; c < MAX_CHN; c++)
   {
-    if ((epnum[c] > p) && (epnum[c] != MAX_PATT-1)) epnum[c]++;
+    if ((editorUndoInfo.editorInfo[c].epnum > p) && (editorUndoInfo.editorInfo[c].epnum != MAX_PATT-1)) editorUndoInfo.editorInfo[c].epnum++;
   }
 
   return 1;
@@ -1436,7 +1446,7 @@ void deletepattern(int p)
   
   for (c = 0; c < MAX_CHN; c++)
   {
-    if (epnum[c] > p) epnum[c]--;
+    if (editorUndoInfo.editorInfo[c].epnum > p) editorUndoInfo.editorInfo[c].epnum--;
   }
 }
 
@@ -1508,7 +1518,7 @@ void findduplicatepatterns(void)
               }
             }
             for (f = 0; f < MAX_CHN; f++)
-              if (epnum[f] == d) epnum[f] = c;
+              if (editorUndoInfo.editorInfo[f].epnum == d) editorUndoInfo.editorInfo[f].epnum = c;
           }
         }
       }

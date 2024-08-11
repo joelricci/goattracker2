@@ -37,7 +37,8 @@ FILTERPARAMS filterparams =
    0.9613160610660189f};
 
 extern unsigned residdelay;
-extern unsigned adparam;
+//extern unsigned adparam;
+
 
 void sid_init(int speed, unsigned m, unsigned ntsc, unsigned interpolate, unsigned customclockrate, unsigned usefp)
 {
@@ -121,7 +122,7 @@ void sid_init(int speed, unsigned m, unsigned ntsc, unsigned interpolate, unsign
   }
 }
 
-unsigned char sid_getorder(unsigned char index)
+unsigned char sid_getorder(unsigned char index, unsigned int adparam)
 {
   if (adparam >= 0xf000)
     return altsidorder[index];
@@ -129,7 +130,7 @@ unsigned char sid_getorder(unsigned char index)
     return sidorder[index];
 }
 
-int sid_fillbuffer(short *ptr, int samples)
+int sid_fillbuffer(short *ptr, int samples, unsigned int adparam)
 {
   int tdelta;
   int tdelta2;
@@ -144,7 +145,7 @@ int sid_fillbuffer(short *ptr, int samples)
 
   for (c = 0; c < NUMSIDREGS; c++)
   {
-    unsigned char o = sid_getorder(c);
+    unsigned char o = sid_getorder(c,adparam);
 
     // Possible random badline delay once per writing
     if ((badline == c) && (residdelay))

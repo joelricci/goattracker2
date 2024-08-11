@@ -335,6 +335,7 @@ SHIFT+F5  Decrease speed multiplier
 SHIFT+F6  Increase speed multiplier
 SHIFT+F7  Edit hardrestart ADSR parameter
 SHIFT+F8  Switch between 6581 and 8580 SID models
+SHIFT+F9  Toggle ReSID interpolation and filter patch (distortion) mode
 SHIFT+F10 Merge-load song
 SHIFT+,.  Move song startposition on all channels and restart last playmode
 TAB       Cycle between editing modes (forwards)
@@ -2000,10 +2001,15 @@ v2.76     - Fixed bug in packed songs with no instrument vibrato and only
 
 Unofficial fixes:
 
-          - Macbook keyboard insert support using alt/option + backspace or fn + shift + backspace
-          - Deleting rows now works correctly on a Macbook keyboard
-          - Delete using fn + backspace on a Macbook keyboard
-          - Backspace works as expected when entering filenames
-          - Better support for some USB keyboards (unwanted characters)
-          - Build instructions for MacOS (see separate txt file)
-          - Builds on Intel macOS 11 and later
+          - Undo edits using CTRL/CMD+Z (Thanks to Jason Page)
+          - Toggle ReSID interpolation and filter patch (distortion) mode by 
+            clicking INT/FP or press SHIFT+F9.
+          - Fine vibrato (FV) setting is now saved to config.
+          - Macbook keyboard insert support using ALT/OPTION + BACKSPACE
+            or FN + SHIFT + BACKSPACE.
+          - Deleting rows now works correctly on a Macbook keyboard.
+          - Delete using fn + backspace on a Macbook keyboard.
+          - Backspace works as expected when entering filenames.
+          - Better support for some USB keyboards (unwanted characters).
+          - Build instructions for MacOS (see separate txt file).
+          - Builds on Intel macOS 11 and later.

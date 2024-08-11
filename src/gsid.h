@@ -23,8 +23,8 @@ typedef struct
 } FILTERPARAMS;
 
 void sid_init(int speed, unsigned m, unsigned ntsc, unsigned interpolate, unsigned customclockrate, unsigned usefp);
-int sid_fillbuffer(short *ptr, int samples);
-unsigned char sid_getorder(unsigned char index);
+int sid_fillbuffer(short *ptr, int samples,  unsigned int adparam);
+unsigned char sid_getorder(unsigned char index, unsigned int adparam);
 
 #ifndef GSID_C
 extern unsigned char sidreg[NUMSIDREGS];
