@@ -28,7 +28,7 @@ http://sourceforge.net/projects/goattracker2
 
 <br>
 
--- See **build instructions for  [MAC](../build_instructions_macos.txt)** ! --
+-->> See **build instructions for  [MAC](../build_instructions_macos.txt)** ! <<--
 
 <br>
 
@@ -38,6 +38,7 @@ This fork is based on the official above version of Goat Tracker. See [readme.tx
 
 Additional changes in this fork:
 
+- Builds on Intel and ARM Macs
 - Undo edits using CTRL/CMD+Z (Thanks to Jason Page)
 - Toggle ReSID interpolation and filter patch (distortion) mode by clicking INT/FP or press SHIFT+F9.
 - Fine vibrato (FV) setting is now saved to config.
@@ -47,4 +48,4 @@ Additional changes in this fork:
 - Backspace works as expected when entering filenames
 - Better support for some USB keyboards (unwanted characters)
 - Build instructions for MacOS (see separate [txt file](../build_instructions_macos.txt))
-- Builds on Intel macOS 11 and later
+
